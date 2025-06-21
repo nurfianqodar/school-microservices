@@ -5,9 +5,18 @@ option go_package = "github.com/nurfianqodar/school-microservices/services/users
 package pb.users.pbuser;
 
 service UserService {
-    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
+    rpc CreateOneUser(CreateOneUserRequest) returns (CreateOneUserResponse) {}
+    rpc GetOneUser(GetOneUserRequest) returns (GetOneUserResponse) {}
+    rpc GetOneCredentialUserByEmail(GetOneCredentialUserByEmailRequest) returns (GetOneCredentialUserByEmailResponse) {}
+    rpc GetManyUser(GetManyUserRequest) returns (GetManyUserResponse) {}
+    rpc UpdateOnePasswordUser(UpdateOnePasswordUserRequest) returns (UpdateOnePasswordUserResponse) {}
+    rpc UpdateOneEmailUser(UpdateOneEmailUserRequest) returns (UpdateOneEmailUserResponse) {}
+    rpc UpdateOneRoleUser(UpdateOneRoleUserRequest) returns (UpdateOneRoleUserResponse) {}
+    rpc DeleteSoftOneUser(DeleteSoftOneUserRequest) returns (DeleteSoftOneUserResponse) {}
+    rpc DeleteHardOneUser(DeleteHardOneUserRequest) returns (DeleteHardOneUserResponse) {}
 }
 
+// User role enum
 enum UserRole {
     Unspecified = 0;
     Teacher = 1;
@@ -16,13 +25,101 @@ enum UserRole {
     Parent = 4;
 }
 
-message CreateUserRequest {
+// Create user message
+message CreateOneUserRequest {
     string id = 1;
     string email = 2;
     string password = 3;
     string role = 4;
 }
 
-message CreateUserResponse {
+message CreateOneUserResponse {
+    string id = 1;
+}
+
+// Get list user message
+message UserSummary {
+    string id = 1;
+    string email = 2;
+    string role = 3;
+}
+
+message GetManyUserRequest {
+    uint64 limit = 1;
+    uint64 offset = 2;
+}
+
+message GetManyUserResponse {
+    repeated UserSummary users = 1;
+}
+
+// Get Detail user
+message GetOneUserRequest {
+    string id = 1;
+}
+
+message GetOneUserResponse {
+    string id = 1;
+    string email = 2;
+    string role = 3;
+    string created_at = 4;
+    string deleted_at = 5;
+}
+
+// Get credential user by email
+message GetOneCredentialUserByEmailRequest {
+    string email = 1;
+}
+
+message GetOneCredentialUserByEmailResponse {
+    string id = 1;
+    string password_hash = 2;
+}
+
+// Update password
+message UpdateOnePasswordUserRequest {
+    string id = 1;
+    string password = 2;
+}
+
+message UpdateOnePasswordUserResponse {
+    string id = 1;
+}
+
+// Update email
+message UpdateOneEmailUserRequest {
+    string id = 1;
+    string email = 2;
+}
+
+message UpdateOneEmailUserResponse {
+    string id = 1;
+}
+
+// Update role
+message UpdateOneRoleUserRequest {
+    string id = 1;
+    UserRole role = 2;
+}
+
+message UpdateOneRoleUserResponse {
+    string id = 1;
+}
+
+// Delete soft
+message DeleteSoftOneUserRequest {
+    string id = 1;
+}
+
+message DeleteSoftOneUserResponse {
+    string id = 1;
+}
+
+// Delete hard
+message DeleteHardOneUserRequest {
+    string id = 1;
+}
+
+message DeleteHardOneUserResponse {
     string id = 1;
 }

@@ -19,14 +19,30 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UserService_CreateUser_FullMethodName = "/pb.users.pbuser.UserService/CreateUser"
+	UserService_CreateOneUser_FullMethodName               = "/pb.users.pbuser.UserService/CreateOneUser"
+	UserService_GetOneUser_FullMethodName                  = "/pb.users.pbuser.UserService/GetOneUser"
+	UserService_GetOneCredentialUserByEmail_FullMethodName = "/pb.users.pbuser.UserService/GetOneCredentialUserByEmail"
+	UserService_GetManyUser_FullMethodName                 = "/pb.users.pbuser.UserService/GetManyUser"
+	UserService_UpdateOnePasswordUser_FullMethodName       = "/pb.users.pbuser.UserService/UpdateOnePasswordUser"
+	UserService_UpdateOneEmailUser_FullMethodName          = "/pb.users.pbuser.UserService/UpdateOneEmailUser"
+	UserService_UpdateOneRoleUser_FullMethodName           = "/pb.users.pbuser.UserService/UpdateOneRoleUser"
+	UserService_DeleteSoftOneUser_FullMethodName           = "/pb.users.pbuser.UserService/DeleteSoftOneUser"
+	UserService_DeleteHardOneUser_FullMethodName           = "/pb.users.pbuser.UserService/DeleteHardOneUser"
 )
 
 // UserServiceClient is the client API for UserService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
-	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
+	CreateOneUser(ctx context.Context, in *CreateOneUserRequest, opts ...grpc.CallOption) (*CreateOneUserResponse, error)
+	GetOneUser(ctx context.Context, in *GetOneUserRequest, opts ...grpc.CallOption) (*GetOneUserResponse, error)
+	GetOneCredentialUserByEmail(ctx context.Context, in *GetOneCredentialUserByEmailRequest, opts ...grpc.CallOption) (*GetOneCredentialUserByEmailResponse, error)
+	GetManyUser(ctx context.Context, in *GetManyUserRequest, opts ...grpc.CallOption) (*GetManyUserResponse, error)
+	UpdateOnePasswordUser(ctx context.Context, in *UpdateOnePasswordUserRequest, opts ...grpc.CallOption) (*UpdateOnePasswordUserResponse, error)
+	UpdateOneEmailUser(ctx context.Context, in *UpdateOneEmailUserRequest, opts ...grpc.CallOption) (*UpdateOneEmailUserResponse, error)
+	UpdateOneRoleUser(ctx context.Context, in *UpdateOneRoleUserRequest, opts ...grpc.CallOption) (*UpdateOneRoleUserResponse, error)
+	DeleteSoftOneUser(ctx context.Context, in *DeleteSoftOneUserRequest, opts ...grpc.CallOption) (*DeleteSoftOneUserResponse, error)
+	DeleteHardOneUser(ctx context.Context, in *DeleteHardOneUserRequest, opts ...grpc.CallOption) (*DeleteHardOneUserResponse, error)
 }
 
 type userServiceClient struct {
@@ -37,10 +53,90 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 	return &userServiceClient{cc}
 }
 
-func (c *userServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error) {
+func (c *userServiceClient) CreateOneUser(ctx context.Context, in *CreateOneUserRequest, opts ...grpc.CallOption) (*CreateOneUserResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateUserResponse)
-	err := c.cc.Invoke(ctx, UserService_CreateUser_FullMethodName, in, out, cOpts...)
+	out := new(CreateOneUserResponse)
+	err := c.cc.Invoke(ctx, UserService_CreateOneUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetOneUser(ctx context.Context, in *GetOneUserRequest, opts ...grpc.CallOption) (*GetOneUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetOneUserResponse)
+	err := c.cc.Invoke(ctx, UserService_GetOneUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetOneCredentialUserByEmail(ctx context.Context, in *GetOneCredentialUserByEmailRequest, opts ...grpc.CallOption) (*GetOneCredentialUserByEmailResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetOneCredentialUserByEmailResponse)
+	err := c.cc.Invoke(ctx, UserService_GetOneCredentialUserByEmail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetManyUser(ctx context.Context, in *GetManyUserRequest, opts ...grpc.CallOption) (*GetManyUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetManyUserResponse)
+	err := c.cc.Invoke(ctx, UserService_GetManyUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) UpdateOnePasswordUser(ctx context.Context, in *UpdateOnePasswordUserRequest, opts ...grpc.CallOption) (*UpdateOnePasswordUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOnePasswordUserResponse)
+	err := c.cc.Invoke(ctx, UserService_UpdateOnePasswordUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) UpdateOneEmailUser(ctx context.Context, in *UpdateOneEmailUserRequest, opts ...grpc.CallOption) (*UpdateOneEmailUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOneEmailUserResponse)
+	err := c.cc.Invoke(ctx, UserService_UpdateOneEmailUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) UpdateOneRoleUser(ctx context.Context, in *UpdateOneRoleUserRequest, opts ...grpc.CallOption) (*UpdateOneRoleUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOneRoleUserResponse)
+	err := c.cc.Invoke(ctx, UserService_UpdateOneRoleUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) DeleteSoftOneUser(ctx context.Context, in *DeleteSoftOneUserRequest, opts ...grpc.CallOption) (*DeleteSoftOneUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteSoftOneUserResponse)
+	err := c.cc.Invoke(ctx, UserService_DeleteSoftOneUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) DeleteHardOneUser(ctx context.Context, in *DeleteHardOneUserRequest, opts ...grpc.CallOption) (*DeleteHardOneUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteHardOneUserResponse)
+	err := c.cc.Invoke(ctx, UserService_DeleteHardOneUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +147,15 @@ func (c *userServiceClient) CreateUser(ctx context.Context, in *CreateUserReques
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
 type UserServiceServer interface {
-	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
+	CreateOneUser(context.Context, *CreateOneUserRequest) (*CreateOneUserResponse, error)
+	GetOneUser(context.Context, *GetOneUserRequest) (*GetOneUserResponse, error)
+	GetOneCredentialUserByEmail(context.Context, *GetOneCredentialUserByEmailRequest) (*GetOneCredentialUserByEmailResponse, error)
+	GetManyUser(context.Context, *GetManyUserRequest) (*GetManyUserResponse, error)
+	UpdateOnePasswordUser(context.Context, *UpdateOnePasswordUserRequest) (*UpdateOnePasswordUserResponse, error)
+	UpdateOneEmailUser(context.Context, *UpdateOneEmailUserRequest) (*UpdateOneEmailUserResponse, error)
+	UpdateOneRoleUser(context.Context, *UpdateOneRoleUserRequest) (*UpdateOneRoleUserResponse, error)
+	DeleteSoftOneUser(context.Context, *DeleteSoftOneUserRequest) (*DeleteSoftOneUserResponse, error)
+	DeleteHardOneUser(context.Context, *DeleteHardOneUserRequest) (*DeleteHardOneUserResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -62,8 +166,32 @@ type UserServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedUserServiceServer struct{}
 
-func (UnimplementedUserServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
+func (UnimplementedUserServiceServer) CreateOneUser(context.Context, *CreateOneUserRequest) (*CreateOneUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOneUser not implemented")
+}
+func (UnimplementedUserServiceServer) GetOneUser(context.Context, *GetOneUserRequest) (*GetOneUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOneUser not implemented")
+}
+func (UnimplementedUserServiceServer) GetOneCredentialUserByEmail(context.Context, *GetOneCredentialUserByEmailRequest) (*GetOneCredentialUserByEmailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOneCredentialUserByEmail not implemented")
+}
+func (UnimplementedUserServiceServer) GetManyUser(context.Context, *GetManyUserRequest) (*GetManyUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetManyUser not implemented")
+}
+func (UnimplementedUserServiceServer) UpdateOnePasswordUser(context.Context, *UpdateOnePasswordUserRequest) (*UpdateOnePasswordUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOnePasswordUser not implemented")
+}
+func (UnimplementedUserServiceServer) UpdateOneEmailUser(context.Context, *UpdateOneEmailUserRequest) (*UpdateOneEmailUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOneEmailUser not implemented")
+}
+func (UnimplementedUserServiceServer) UpdateOneRoleUser(context.Context, *UpdateOneRoleUserRequest) (*UpdateOneRoleUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOneRoleUser not implemented")
+}
+func (UnimplementedUserServiceServer) DeleteSoftOneUser(context.Context, *DeleteSoftOneUserRequest) (*DeleteSoftOneUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteSoftOneUser not implemented")
+}
+func (UnimplementedUserServiceServer) DeleteHardOneUser(context.Context, *DeleteHardOneUserRequest) (*DeleteHardOneUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteHardOneUser not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -86,20 +214,164 @@ func RegisterUserServiceServer(s grpc.ServiceRegistrar, srv UserServiceServer) {
 	s.RegisterService(&UserService_ServiceDesc, srv)
 }
 
-func _UserService_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateUserRequest)
+func _UserService_CreateOneUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOneUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).CreateUser(ctx, in)
+		return srv.(UserServiceServer).CreateOneUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UserService_CreateUser_FullMethodName,
+		FullMethod: UserService_CreateOneUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).CreateUser(ctx, req.(*CreateUserRequest))
+		return srv.(UserServiceServer).CreateOneUser(ctx, req.(*CreateOneUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetOneUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOneUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetOneUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetOneUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetOneUser(ctx, req.(*GetOneUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetOneCredentialUserByEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOneCredentialUserByEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetOneCredentialUserByEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetOneCredentialUserByEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetOneCredentialUserByEmail(ctx, req.(*GetOneCredentialUserByEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetManyUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetManyUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetManyUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetManyUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetManyUser(ctx, req.(*GetManyUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_UpdateOnePasswordUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOnePasswordUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UpdateOnePasswordUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_UpdateOnePasswordUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UpdateOnePasswordUser(ctx, req.(*UpdateOnePasswordUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_UpdateOneEmailUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOneEmailUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UpdateOneEmailUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_UpdateOneEmailUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UpdateOneEmailUser(ctx, req.(*UpdateOneEmailUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_UpdateOneRoleUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOneRoleUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UpdateOneRoleUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_UpdateOneRoleUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UpdateOneRoleUser(ctx, req.(*UpdateOneRoleUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_DeleteSoftOneUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteSoftOneUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).DeleteSoftOneUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_DeleteSoftOneUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).DeleteSoftOneUser(ctx, req.(*DeleteSoftOneUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_DeleteHardOneUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteHardOneUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).DeleteHardOneUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_DeleteHardOneUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).DeleteHardOneUser(ctx, req.(*DeleteHardOneUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -112,8 +384,40 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UserServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateUser",
-			Handler:    _UserService_CreateUser_Handler,
+			MethodName: "CreateOneUser",
+			Handler:    _UserService_CreateOneUser_Handler,
+		},
+		{
+			MethodName: "GetOneUser",
+			Handler:    _UserService_GetOneUser_Handler,
+		},
+		{
+			MethodName: "GetOneCredentialUserByEmail",
+			Handler:    _UserService_GetOneCredentialUserByEmail_Handler,
+		},
+		{
+			MethodName: "GetManyUser",
+			Handler:    _UserService_GetManyUser_Handler,
+		},
+		{
+			MethodName: "UpdateOnePasswordUser",
+			Handler:    _UserService_UpdateOnePasswordUser_Handler,
+		},
+		{
+			MethodName: "UpdateOneEmailUser",
+			Handler:    _UserService_UpdateOneEmailUser_Handler,
+		},
+		{
+			MethodName: "UpdateOneRoleUser",
+			Handler:    _UserService_UpdateOneRoleUser_Handler,
+		},
+		{
+			MethodName: "DeleteSoftOneUser",
+			Handler:    _UserService_DeleteSoftOneUser_Handler,
+		},
+		{
+			MethodName: "DeleteHardOneUser",
+			Handler:    _UserService_DeleteHardOneUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
