@@ -57,28 +57,20 @@ func (e *httperr) Send(w http.ResponseWriter) {
 }
 
 func ConvertGRPCErrorToHTTPErr(err error) HTTPErr {
+
+	var httpCode int
+	var finalDetail any
+
 	st := status.Convert(err)
 	message := st.Message()
-	var details []map[string]string
-	var finalDetail any
-	var httpCode int
+	detail := make([]any, 0, len(st.Details()))
 
+	// Convert code
 	switch st.Code() {
 	case codes.AlreadyExists:
 		httpCode = http.StatusConflict
 	case codes.InvalidArgument:
 		httpCode = http.StatusBadRequest
-		if len(st.Details()) != 0 {
-			details = make([]map[string]string, 0, len(st.Details()))
-			for _, d := range st.Details() {
-				if fieldErr, ok := d.(*epb.BadRequest_FieldViolation); ok {
-					details = append(details, map[string]string{
-						"field":     fieldErr.GetField(),
-						"violation": fieldErr.GetDescription(),
-					})
-				}
-			}
-		}
 	case codes.Unauthenticated:
 		httpCode = http.StatusUnauthorized
 	case codes.Aborted:
@@ -87,10 +79,23 @@ func ConvertGRPCErrorToHTTPErr(err error) HTTPErr {
 		httpCode = http.StatusInternalServerError
 	}
 
-	if len(details) == 0 {
+	for _, d := range st.Details() {
+		switch info := d.(type) {
+		case *epb.BadRequest:
+			detail = append(detail, info.GetFieldViolations())
+		case *epb.PreconditionFailure:
+			detail = append(detail, info.GetViolations())
+		case *epb.QuotaFailure:
+			detail = append(detail, info.GetViolations())
+		}
+	}
+
+	if len(detail) == 0 {
 		finalDetail = nil
+	} else if len(detail) == 1 {
+		finalDetail = detail[0]
 	} else {
-		finalDetail = details
+		finalDetail = detail
 	}
 
 	return &httperr{
