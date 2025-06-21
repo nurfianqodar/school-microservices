@@ -30,7 +30,7 @@ SELECT
     role
 FROM users
 WHERE
-    deleted_at IS NOT NULL
+    deleted_at IS NULL
 LIMIT $1 OFFSET $2;
 
 -- name: UpdateOnePasswordUser :one

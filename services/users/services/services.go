@@ -145,6 +145,7 @@ func (s *service) GetManyUser(
 		return nil, errs.ErrInternalServer
 	}
 	users := make([]*pbusers.UserSummary, 0, len(res))
+	log.Printf("found %d users\n", len(users))
 	for _, user := range res {
 		var pbRole pbusers.UserRole
 

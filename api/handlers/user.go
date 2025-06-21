@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -16,7 +17,7 @@ type userHandler struct {
 
 func (h *userHandler) RegisterRouter(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/v1/users/{$}", h.handleCreateOneUser)
-	mux.HandleFunc("GET /api/v1/users/{$}", h.handleCreateOneUser)
+	mux.HandleFunc("GET /api/v1/users/{$}", h.handleListUser)
 }
 
 func NewUserHandler(s pbusers.UserServiceClient) Handler {
@@ -44,6 +45,7 @@ func (h *userHandler) handleCreateOneUser(w http.ResponseWriter, r *http.Request
 }
 
 func (h *userHandler) handleListUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	takeQuery := r.URL.Query().Get("take")
 	skipQuery := r.URL.Query().Get("skip")
 
@@ -62,6 +64,9 @@ func (h *userHandler) handleListUser(w http.ResponseWriter, r *http.Request) {
 	if limit == 0 {
 		limit = 10
 	}
+
+	log.Println(limit)
+	log.Println(offset)
 
 	res, err := h.s.GetManyUser(r.Context(), &pbusers.GetManyUserRequest{
 		Limit:  uint64(limit),
