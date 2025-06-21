@@ -63,7 +63,7 @@ message GetOneUserResponse {
     string email = 2;
     string role = 3;
     string created_at = 4;
-    string deleted_at = 5;
+    string updated_at = 5;
 }
 
 // Get credential user by email

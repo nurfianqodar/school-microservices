@@ -11,7 +11,31 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const createUser = `-- name: CreateUser :one
+const countEmailUser = `-- name: CountEmailUser :one
+SELECT COUNT(*) FROM users
+WHERE email = $1
+`
+
+func (q *Queries) CountEmailUser(ctx context.Context, email string) (int64, error) {
+	row := q.db.QueryRow(ctx, countEmailUser, email)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countIDUser = `-- name: CountIDUser :one
+SELECT COUNT(*) FROM users
+WHERE email = $1
+`
+
+func (q *Queries) CountIDUser(ctx context.Context, email string) (int64, error) {
+	row := q.db.QueryRow(ctx, countIDUser, email)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const createOneUser = `-- name: CreateOneUser :one
 INSERT INTO users
 (id, email, role, password_hash)
 VALUES
@@ -19,20 +43,197 @@ VALUES
 RETURNING id
 `
 
-type CreateUserParams struct {
+type CreateOneUserParams struct {
 	ID           pgtype.UUID `json:"id"`
 	Email        string      `json:"email"`
 	Role         UserRole    `json:"role"`
 	PasswordHash string      `json:"passwordHash"`
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg *CreateUserParams) (pgtype.UUID, error) {
-	row := q.db.QueryRow(ctx, createUser,
+func (q *Queries) CreateOneUser(ctx context.Context, arg *CreateOneUserParams) (pgtype.UUID, error) {
+	row := q.db.QueryRow(ctx, createOneUser,
 		arg.ID,
 		arg.Email,
 		arg.Role,
 		arg.PasswordHash,
 	)
+	var id pgtype.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
+const deleteHardOneUser = `-- name: DeleteHardOneUser :one
+DELETE FROM users
+WHERE id = $1
+RETURNING id
+`
+
+func (q *Queries) DeleteHardOneUser(ctx context.Context, id pgtype.UUID) (pgtype.UUID, error) {
+	row := q.db.QueryRow(ctx, deleteHardOneUser, id)
+	err := row.Scan(&id)
+	return id, err
+}
+
+const deleteSoftOneUser = `-- name: DeleteSoftOneUser :one
+UPDATE users
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = $1 AND deleted_at IS NOT NULL
+RETURNING id
+`
+
+func (q *Queries) DeleteSoftOneUser(ctx context.Context, id pgtype.UUID) (pgtype.UUID, error) {
+	row := q.db.QueryRow(ctx, deleteSoftOneUser, id)
+	err := row.Scan(&id)
+	return id, err
+}
+
+const getManyUser = `-- name: GetManyUser :many
+SELECT
+    id,
+    email,
+    role
+FROM users
+WHERE
+    deleted_at IS NOT NULL
+LIMIT $1 OFFSET $2
+`
+
+type GetManyUserParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+type GetManyUserRow struct {
+	ID    pgtype.UUID `json:"id"`
+	Email string      `json:"email"`
+	Role  UserRole    `json:"role"`
+}
+
+func (q *Queries) GetManyUser(ctx context.Context, arg *GetManyUserParams) ([]*GetManyUserRow, error) {
+	rows, err := q.db.Query(ctx, getManyUser, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []*GetManyUserRow{}
+	for rows.Next() {
+		var i GetManyUserRow
+		if err := rows.Scan(&i.ID, &i.Email, &i.Role); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getOneCredentialUserByEmail = `-- name: GetOneCredentialUserByEmail :one
+SELECT
+    id,
+    password_hash
+FROM users
+WHERE
+    email = $1 AND deleted_at IS NOT NULL
+`
+
+type GetOneCredentialUserByEmailRow struct {
+	ID           pgtype.UUID `json:"id"`
+	PasswordHash string      `json:"passwordHash"`
+}
+
+func (q *Queries) GetOneCredentialUserByEmail(ctx context.Context, email string) (*GetOneCredentialUserByEmailRow, error) {
+	row := q.db.QueryRow(ctx, getOneCredentialUserByEmail, email)
+	var i GetOneCredentialUserByEmailRow
+	err := row.Scan(&i.ID, &i.PasswordHash)
+	return &i, err
+}
+
+const getOneUser = `-- name: GetOneUser :one
+SELECT
+    id,
+    email,
+    role,
+    created_at,
+    updated_at
+FROM users
+WHERE id = $1 AND deleted_at IS NOT NULL
+`
+
+type GetOneUserRow struct {
+	ID        pgtype.UUID        `json:"id"`
+	Email     string             `json:"email"`
+	Role      UserRole           `json:"role"`
+	CreatedAt pgtype.Timestamptz `json:"createdAt"`
+	UpdatedAt pgtype.Timestamptz `json:"updatedAt"`
+}
+
+func (q *Queries) GetOneUser(ctx context.Context, id pgtype.UUID) (*GetOneUserRow, error) {
+	row := q.db.QueryRow(ctx, getOneUser, id)
+	var i GetOneUserRow
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Role,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return &i, err
+}
+
+const updateOneEmailUser = `-- name: UpdateOneEmailUser :one
+UPDATE users
+SET email = $2
+WHERE id = $1 AND deleted_at IS NOT NULL
+RETURNING id
+`
+
+type UpdateOneEmailUserParams struct {
+	ID    pgtype.UUID `json:"id"`
+	Email string      `json:"email"`
+}
+
+func (q *Queries) UpdateOneEmailUser(ctx context.Context, arg *UpdateOneEmailUserParams) (pgtype.UUID, error) {
+	row := q.db.QueryRow(ctx, updateOneEmailUser, arg.ID, arg.Email)
+	var id pgtype.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
+const updateOnePasswordUser = `-- name: UpdateOnePasswordUser :one
+UPDATE users
+SET password_hash = $2
+WHERE id = $1 AND deleted_at IS NOT NULL
+RETURNING id
+`
+
+type UpdateOnePasswordUserParams struct {
+	ID           pgtype.UUID `json:"id"`
+	PasswordHash string      `json:"passwordHash"`
+}
+
+func (q *Queries) UpdateOnePasswordUser(ctx context.Context, arg *UpdateOnePasswordUserParams) (pgtype.UUID, error) {
+	row := q.db.QueryRow(ctx, updateOnePasswordUser, arg.ID, arg.PasswordHash)
+	var id pgtype.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
+const updateOneRoleUser = `-- name: UpdateOneRoleUser :one
+UPDATE users
+SET role = $2
+WHERE id = $1 AND deleted_at IS NOT NULL
+RETURNING id
+`
+
+type UpdateOneRoleUserParams struct {
+	ID   pgtype.UUID `json:"id"`
+	Role UserRole    `json:"role"`
+}
+
+func (q *Queries) UpdateOneRoleUser(ctx context.Context, arg *UpdateOneRoleUserParams) (pgtype.UUID, error) {
+	row := q.db.QueryRow(ctx, updateOneRoleUser, arg.ID, arg.Role)
 	var id pgtype.UUID
 	err := row.Scan(&id)
 	return id, err
