@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option go_package = "github.com/nurfianqodar/school-microservices/services/users/pb/users/v1;pbusers";
+
+package pb.users.pbuser;
+
+service UserService {
+    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
+}
+
+enum UserRole {
+    Unspecified = 0;
+    Teacher = 1;
+    Staff = 2;
+    Student = 3;
+    Parent = 4;
+}
+
+message CreateUserRequest {
+    string id = 1;
+    string email = 2;
+    string password = 3;
+    string role = 4;
+}
+
+message CreateUserResponse {
+    string id = 1;
+}
