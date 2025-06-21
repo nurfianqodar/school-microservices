@@ -28,6 +28,9 @@ const (
 	UserService_UpdateOneRoleUser_FullMethodName           = "/pb.users.pbuser.UserService/UpdateOneRoleUser"
 	UserService_DeleteSoftOneUser_FullMethodName           = "/pb.users.pbuser.UserService/DeleteSoftOneUser"
 	UserService_DeleteHardOneUser_FullMethodName           = "/pb.users.pbuser.UserService/DeleteHardOneUser"
+	UserService_LoginUser_FullMethodName                   = "/pb.users.pbuser.UserService/LoginUser"
+	UserService_VerifyTokenUser_FullMethodName             = "/pb.users.pbuser.UserService/VerifyTokenUser"
+	UserService_RefreshTokenUser_FullMethodName            = "/pb.users.pbuser.UserService/RefreshTokenUser"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -43,6 +46,10 @@ type UserServiceClient interface {
 	UpdateOneRoleUser(ctx context.Context, in *UpdateOneRoleUserRequest, opts ...grpc.CallOption) (*UpdateOneRoleUserResponse, error)
 	DeleteSoftOneUser(ctx context.Context, in *DeleteSoftOneUserRequest, opts ...grpc.CallOption) (*DeleteSoftOneUserResponse, error)
 	DeleteHardOneUser(ctx context.Context, in *DeleteHardOneUserRequest, opts ...grpc.CallOption) (*DeleteHardOneUserResponse, error)
+	// Auth services
+	LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error)
+	VerifyTokenUser(ctx context.Context, in *VerifyTokenUserRequest, opts ...grpc.CallOption) (*VerifyTokenUserResponse, error)
+	RefreshTokenUser(ctx context.Context, in *RefreshTokenUserRequest, opts ...grpc.CallOption) (*RefreshTokenUserResponse, error)
 }
 
 type userServiceClient struct {
@@ -143,6 +150,36 @@ func (c *userServiceClient) DeleteHardOneUser(ctx context.Context, in *DeleteHar
 	return out, nil
 }
 
+func (c *userServiceClient) LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LoginUserResponse)
+	err := c.cc.Invoke(ctx, UserService_LoginUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) VerifyTokenUser(ctx context.Context, in *VerifyTokenUserRequest, opts ...grpc.CallOption) (*VerifyTokenUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(VerifyTokenUserResponse)
+	err := c.cc.Invoke(ctx, UserService_VerifyTokenUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) RefreshTokenUser(ctx context.Context, in *RefreshTokenUserRequest, opts ...grpc.CallOption) (*RefreshTokenUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RefreshTokenUserResponse)
+	err := c.cc.Invoke(ctx, UserService_RefreshTokenUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
@@ -156,6 +193,10 @@ type UserServiceServer interface {
 	UpdateOneRoleUser(context.Context, *UpdateOneRoleUserRequest) (*UpdateOneRoleUserResponse, error)
 	DeleteSoftOneUser(context.Context, *DeleteSoftOneUserRequest) (*DeleteSoftOneUserResponse, error)
 	DeleteHardOneUser(context.Context, *DeleteHardOneUserRequest) (*DeleteHardOneUserResponse, error)
+	// Auth services
+	LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error)
+	VerifyTokenUser(context.Context, *VerifyTokenUserRequest) (*VerifyTokenUserResponse, error)
+	RefreshTokenUser(context.Context, *RefreshTokenUserRequest) (*RefreshTokenUserResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -192,6 +233,15 @@ func (UnimplementedUserServiceServer) DeleteSoftOneUser(context.Context, *Delete
 }
 func (UnimplementedUserServiceServer) DeleteHardOneUser(context.Context, *DeleteHardOneUserRequest) (*DeleteHardOneUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteHardOneUser not implemented")
+}
+func (UnimplementedUserServiceServer) LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginUser not implemented")
+}
+func (UnimplementedUserServiceServer) VerifyTokenUser(context.Context, *VerifyTokenUserRequest) (*VerifyTokenUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyTokenUser not implemented")
+}
+func (UnimplementedUserServiceServer) RefreshTokenUser(context.Context, *RefreshTokenUserRequest) (*RefreshTokenUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RefreshTokenUser not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -376,6 +426,60 @@ func _UserService_DeleteHardOneUser_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_LoginUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).LoginUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_LoginUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).LoginUser(ctx, req.(*LoginUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_VerifyTokenUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyTokenUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).VerifyTokenUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_VerifyTokenUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).VerifyTokenUser(ctx, req.(*VerifyTokenUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_RefreshTokenUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RefreshTokenUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).RefreshTokenUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_RefreshTokenUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).RefreshTokenUser(ctx, req.(*RefreshTokenUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -418,6 +522,18 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteHardOneUser",
 			Handler:    _UserService_DeleteHardOneUser_Handler,
+		},
+		{
+			MethodName: "LoginUser",
+			Handler:    _UserService_LoginUser_Handler,
+		},
+		{
+			MethodName: "VerifyTokenUser",
+			Handler:    _UserService_VerifyTokenUser_Handler,
+		},
+		{
+			MethodName: "RefreshTokenUser",
+			Handler:    _UserService_RefreshTokenUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -2,6 +2,8 @@ syntax = "proto3";
 
 option go_package = "github.com/nurfianqodar/school-microservices/services/users/pb/users/v1;pbusers";
 
+import "google/protobuf/timestamp.proto";
+
 package pb.users.pbuser;
 
 service UserService {
@@ -14,6 +16,11 @@ service UserService {
     rpc UpdateOneRoleUser(UpdateOneRoleUserRequest) returns (UpdateOneRoleUserResponse) {}
     rpc DeleteSoftOneUser(DeleteSoftOneUserRequest) returns (DeleteSoftOneUserResponse) {}
     rpc DeleteHardOneUser(DeleteHardOneUserRequest) returns (DeleteHardOneUserResponse) {}
+
+    // Auth services
+    rpc LoginUser(LoginUserRequest) returns (LoginUserResponse) {}
+    rpc VerifyTokenUser(VerifyTokenUserRequest) returns (VerifyTokenUserResponse) {}
+    rpc RefreshTokenUser(RefreshTokenUserRequest) returns (RefreshTokenUserResponse) {}
 }
 
 // User role enum
@@ -121,4 +128,38 @@ message DeleteHardOneUserRequest {
 
 message DeleteHardOneUserResponse {
     string id = 1;
+}
+
+// Login
+message LoginUserRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message LoginUserResponse {
+    string access_token = 1;
+    string refresh_token = 2;
+}
+
+// VerifyToken
+message VerifyTokenUserRequest {
+    string access_token = 1;
+}
+
+message VerifyTokenUserResponse {
+    google.protobuf.Timestamp exp = 1;
+    google.protobuf.Timestamp iat = 2;
+    google.protobuf.Timestamp nbf = 3;
+    string iss = 4;
+    string sub = 5;
+    repeated string aud = 6;
+}
+
+// Refresh token
+message RefreshTokenUserRequest {
+    string refresh_token = 1;
+}
+
+message RefreshTokenUserResponse {
+    string access_token = 1;
 }

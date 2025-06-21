@@ -9,6 +9,7 @@ package pbusers
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -1026,11 +1027,334 @@ func (x *DeleteHardOneUserResponse) GetId() string {
 	return ""
 }
 
+// Login
+type LoginUserRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LoginUserRequest) Reset() {
+	*x = LoginUserRequest{}
+	mi := &file_pb_users_v1_users_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LoginUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LoginUserRequest) ProtoMessage() {}
+
+func (x *LoginUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_pb_users_v1_users_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LoginUserRequest.ProtoReflect.Descriptor instead.
+func (*LoginUserRequest) Descriptor() ([]byte, []int) {
+	return file_pb_users_v1_users_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *LoginUserRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *LoginUserRequest) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+type LoginUserResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AccessToken   string                 `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
+	RefreshToken  string                 `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LoginUserResponse) Reset() {
+	*x = LoginUserResponse{}
+	mi := &file_pb_users_v1_users_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LoginUserResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LoginUserResponse) ProtoMessage() {}
+
+func (x *LoginUserResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pb_users_v1_users_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LoginUserResponse.ProtoReflect.Descriptor instead.
+func (*LoginUserResponse) Descriptor() ([]byte, []int) {
+	return file_pb_users_v1_users_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *LoginUserResponse) GetAccessToken() string {
+	if x != nil {
+		return x.AccessToken
+	}
+	return ""
+}
+
+func (x *LoginUserResponse) GetRefreshToken() string {
+	if x != nil {
+		return x.RefreshToken
+	}
+	return ""
+}
+
+// VerifyToken
+type VerifyTokenUserRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AccessToken   string                 `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VerifyTokenUserRequest) Reset() {
+	*x = VerifyTokenUserRequest{}
+	mi := &file_pb_users_v1_users_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VerifyTokenUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerifyTokenUserRequest) ProtoMessage() {}
+
+func (x *VerifyTokenUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_pb_users_v1_users_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerifyTokenUserRequest.ProtoReflect.Descriptor instead.
+func (*VerifyTokenUserRequest) Descriptor() ([]byte, []int) {
+	return file_pb_users_v1_users_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *VerifyTokenUserRequest) GetAccessToken() string {
+	if x != nil {
+		return x.AccessToken
+	}
+	return ""
+}
+
+type VerifyTokenUserResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Exp           *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=exp,proto3" json:"exp,omitempty"`
+	Iat           *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=iat,proto3" json:"iat,omitempty"`
+	Nbf           *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=nbf,proto3" json:"nbf,omitempty"`
+	Iss           string                 `protobuf:"bytes,4,opt,name=iss,proto3" json:"iss,omitempty"`
+	Sub           string                 `protobuf:"bytes,5,opt,name=sub,proto3" json:"sub,omitempty"`
+	Aud           []string               `protobuf:"bytes,6,rep,name=aud,proto3" json:"aud,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VerifyTokenUserResponse) Reset() {
+	*x = VerifyTokenUserResponse{}
+	mi := &file_pb_users_v1_users_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VerifyTokenUserResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerifyTokenUserResponse) ProtoMessage() {}
+
+func (x *VerifyTokenUserResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pb_users_v1_users_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerifyTokenUserResponse.ProtoReflect.Descriptor instead.
+func (*VerifyTokenUserResponse) Descriptor() ([]byte, []int) {
+	return file_pb_users_v1_users_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *VerifyTokenUserResponse) GetExp() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Exp
+	}
+	return nil
+}
+
+func (x *VerifyTokenUserResponse) GetIat() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Iat
+	}
+	return nil
+}
+
+func (x *VerifyTokenUserResponse) GetNbf() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Nbf
+	}
+	return nil
+}
+
+func (x *VerifyTokenUserResponse) GetIss() string {
+	if x != nil {
+		return x.Iss
+	}
+	return ""
+}
+
+func (x *VerifyTokenUserResponse) GetSub() string {
+	if x != nil {
+		return x.Sub
+	}
+	return ""
+}
+
+func (x *VerifyTokenUserResponse) GetAud() []string {
+	if x != nil {
+		return x.Aud
+	}
+	return nil
+}
+
+// Refresh token
+type RefreshTokenUserRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RefreshToken  string                 `protobuf:"bytes,1,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RefreshTokenUserRequest) Reset() {
+	*x = RefreshTokenUserRequest{}
+	mi := &file_pb_users_v1_users_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RefreshTokenUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RefreshTokenUserRequest) ProtoMessage() {}
+
+func (x *RefreshTokenUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_pb_users_v1_users_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RefreshTokenUserRequest.ProtoReflect.Descriptor instead.
+func (*RefreshTokenUserRequest) Descriptor() ([]byte, []int) {
+	return file_pb_users_v1_users_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *RefreshTokenUserRequest) GetRefreshToken() string {
+	if x != nil {
+		return x.RefreshToken
+	}
+	return ""
+}
+
+type RefreshTokenUserResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AccessToken   string                 `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RefreshTokenUserResponse) Reset() {
+	*x = RefreshTokenUserResponse{}
+	mi := &file_pb_users_v1_users_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RefreshTokenUserResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RefreshTokenUserResponse) ProtoMessage() {}
+
+func (x *RefreshTokenUserResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pb_users_v1_users_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RefreshTokenUserResponse.ProtoReflect.Descriptor instead.
+func (*RefreshTokenUserResponse) Descriptor() ([]byte, []int) {
+	return file_pb_users_v1_users_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *RefreshTokenUserResponse) GetAccessToken() string {
+	if x != nil {
+		return x.AccessToken
+	}
+	return ""
+}
+
 var File_pb_users_v1_users_proto protoreflect.FileDescriptor
 
 const file_pb_users_v1_users_proto_rawDesc = "" +
 	"\n" +
-	"\x17pb/users/v1/users.proto\x12\x0fpb.users.pbuser\"w\n" +
+	"\x17pb/users/v1/users.proto\x12\x0fpb.users.pbuser\x1a\x1fgoogle/protobuf/timestamp.proto\"w\n" +
 	"\x14CreateOneUserRequest\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x03 \x01(\tR\bpassword\x12-\n" +
@@ -1083,14 +1407,34 @@ const file_pb_users_v1_users_proto_rawDesc = "" +
 	"\x18DeleteHardOneUserRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"+\n" +
 	"\x19DeleteHardOneUserResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id*L\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"D\n" +
+	"\x10LoginUserRequest\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"[\n" +
+	"\x11LoginUserResponse\x12!\n" +
+	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12#\n" +
+	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\";\n" +
+	"\x16VerifyTokenUserRequest\x12!\n" +
+	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\"\xd9\x01\n" +
+	"\x17VerifyTokenUserResponse\x12,\n" +
+	"\x03exp\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x03exp\x12,\n" +
+	"\x03iat\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\x03iat\x12,\n" +
+	"\x03nbf\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\x03nbf\x12\x10\n" +
+	"\x03iss\x18\x04 \x01(\tR\x03iss\x12\x10\n" +
+	"\x03sub\x18\x05 \x01(\tR\x03sub\x12\x10\n" +
+	"\x03aud\x18\x06 \x03(\tR\x03aud\">\n" +
+	"\x17RefreshTokenUserRequest\x12#\n" +
+	"\rrefresh_token\x18\x01 \x01(\tR\frefreshToken\"=\n" +
+	"\x18RefreshTokenUserResponse\x12!\n" +
+	"\faccess_token\x18\x01 \x01(\tR\vaccessToken*L\n" +
 	"\bUserRole\x12\x0f\n" +
 	"\vUnspecified\x10\x00\x12\v\n" +
 	"\aTeacher\x10\x01\x12\t\n" +
 	"\x05Staff\x10\x02\x12\v\n" +
 	"\aStudent\x10\x03\x12\n" +
 	"\n" +
-	"\x06Parent\x10\x042\xe6\a\n" +
+	"\x06Parent\x10\x042\x8f\n" +
+	"\n" +
 	"\vUserService\x12`\n" +
 	"\rCreateOneUser\x12%.pb.users.pbuser.CreateOneUserRequest\x1a&.pb.users.pbuser.CreateOneUserResponse\"\x00\x12W\n" +
 	"\n" +
@@ -1101,7 +1445,10 @@ const file_pb_users_v1_users_proto_rawDesc = "" +
 	"\x12UpdateOneEmailUser\x12*.pb.users.pbuser.UpdateOneEmailUserRequest\x1a+.pb.users.pbuser.UpdateOneEmailUserResponse\"\x00\x12l\n" +
 	"\x11UpdateOneRoleUser\x12).pb.users.pbuser.UpdateOneRoleUserRequest\x1a*.pb.users.pbuser.UpdateOneRoleUserResponse\"\x00\x12l\n" +
 	"\x11DeleteSoftOneUser\x12).pb.users.pbuser.DeleteSoftOneUserRequest\x1a*.pb.users.pbuser.DeleteSoftOneUserResponse\"\x00\x12l\n" +
-	"\x11DeleteHardOneUser\x12).pb.users.pbuser.DeleteHardOneUserRequest\x1a*.pb.users.pbuser.DeleteHardOneUserResponse\"\x00BQZOgithub.com/nurfianqodar/school-microservices/services/users/pb/users/v1;pbusersb\x06proto3"
+	"\x11DeleteHardOneUser\x12).pb.users.pbuser.DeleteHardOneUserRequest\x1a*.pb.users.pbuser.DeleteHardOneUserResponse\"\x00\x12T\n" +
+	"\tLoginUser\x12!.pb.users.pbuser.LoginUserRequest\x1a\".pb.users.pbuser.LoginUserResponse\"\x00\x12f\n" +
+	"\x0fVerifyTokenUser\x12'.pb.users.pbuser.VerifyTokenUserRequest\x1a(.pb.users.pbuser.VerifyTokenUserResponse\"\x00\x12i\n" +
+	"\x10RefreshTokenUser\x12(.pb.users.pbuser.RefreshTokenUserRequest\x1a).pb.users.pbuser.RefreshTokenUserResponse\"\x00BQZOgithub.com/nurfianqodar/school-microservices/services/users/pb/users/v1;pbusersb\x06proto3"
 
 var (
 	file_pb_users_v1_users_proto_rawDescOnce sync.Once
@@ -1116,7 +1463,7 @@ func file_pb_users_v1_users_proto_rawDescGZIP() []byte {
 }
 
 var file_pb_users_v1_users_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_pb_users_v1_users_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
+var file_pb_users_v1_users_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
 var file_pb_users_v1_users_proto_goTypes = []any{
 	(UserRole)(0),                               // 0: pb.users.pbuser.UserRole
 	(*CreateOneUserRequest)(nil),                // 1: pb.users.pbuser.CreateOneUserRequest
@@ -1138,34 +1485,50 @@ var file_pb_users_v1_users_proto_goTypes = []any{
 	(*DeleteSoftOneUserResponse)(nil),           // 17: pb.users.pbuser.DeleteSoftOneUserResponse
 	(*DeleteHardOneUserRequest)(nil),            // 18: pb.users.pbuser.DeleteHardOneUserRequest
 	(*DeleteHardOneUserResponse)(nil),           // 19: pb.users.pbuser.DeleteHardOneUserResponse
+	(*LoginUserRequest)(nil),                    // 20: pb.users.pbuser.LoginUserRequest
+	(*LoginUserResponse)(nil),                   // 21: pb.users.pbuser.LoginUserResponse
+	(*VerifyTokenUserRequest)(nil),              // 22: pb.users.pbuser.VerifyTokenUserRequest
+	(*VerifyTokenUserResponse)(nil),             // 23: pb.users.pbuser.VerifyTokenUserResponse
+	(*RefreshTokenUserRequest)(nil),             // 24: pb.users.pbuser.RefreshTokenUserRequest
+	(*RefreshTokenUserResponse)(nil),            // 25: pb.users.pbuser.RefreshTokenUserResponse
+	(*timestamppb.Timestamp)(nil),               // 26: google.protobuf.Timestamp
 }
 var file_pb_users_v1_users_proto_depIdxs = []int32{
 	0,  // 0: pb.users.pbuser.CreateOneUserRequest.role:type_name -> pb.users.pbuser.UserRole
 	3,  // 1: pb.users.pbuser.GetManyUserResponse.users:type_name -> pb.users.pbuser.UserSummary
 	0,  // 2: pb.users.pbuser.UpdateOneRoleUserRequest.role:type_name -> pb.users.pbuser.UserRole
-	1,  // 3: pb.users.pbuser.UserService.CreateOneUser:input_type -> pb.users.pbuser.CreateOneUserRequest
-	6,  // 4: pb.users.pbuser.UserService.GetOneUser:input_type -> pb.users.pbuser.GetOneUserRequest
-	8,  // 5: pb.users.pbuser.UserService.GetOneCredentialUserByEmail:input_type -> pb.users.pbuser.GetOneCredentialUserByEmailRequest
-	4,  // 6: pb.users.pbuser.UserService.GetManyUser:input_type -> pb.users.pbuser.GetManyUserRequest
-	10, // 7: pb.users.pbuser.UserService.UpdateOnePasswordUser:input_type -> pb.users.pbuser.UpdateOnePasswordUserRequest
-	12, // 8: pb.users.pbuser.UserService.UpdateOneEmailUser:input_type -> pb.users.pbuser.UpdateOneEmailUserRequest
-	14, // 9: pb.users.pbuser.UserService.UpdateOneRoleUser:input_type -> pb.users.pbuser.UpdateOneRoleUserRequest
-	16, // 10: pb.users.pbuser.UserService.DeleteSoftOneUser:input_type -> pb.users.pbuser.DeleteSoftOneUserRequest
-	18, // 11: pb.users.pbuser.UserService.DeleteHardOneUser:input_type -> pb.users.pbuser.DeleteHardOneUserRequest
-	2,  // 12: pb.users.pbuser.UserService.CreateOneUser:output_type -> pb.users.pbuser.CreateOneUserResponse
-	7,  // 13: pb.users.pbuser.UserService.GetOneUser:output_type -> pb.users.pbuser.GetOneUserResponse
-	9,  // 14: pb.users.pbuser.UserService.GetOneCredentialUserByEmail:output_type -> pb.users.pbuser.GetOneCredentialUserByEmailResponse
-	5,  // 15: pb.users.pbuser.UserService.GetManyUser:output_type -> pb.users.pbuser.GetManyUserResponse
-	11, // 16: pb.users.pbuser.UserService.UpdateOnePasswordUser:output_type -> pb.users.pbuser.UpdateOnePasswordUserResponse
-	13, // 17: pb.users.pbuser.UserService.UpdateOneEmailUser:output_type -> pb.users.pbuser.UpdateOneEmailUserResponse
-	15, // 18: pb.users.pbuser.UserService.UpdateOneRoleUser:output_type -> pb.users.pbuser.UpdateOneRoleUserResponse
-	17, // 19: pb.users.pbuser.UserService.DeleteSoftOneUser:output_type -> pb.users.pbuser.DeleteSoftOneUserResponse
-	19, // 20: pb.users.pbuser.UserService.DeleteHardOneUser:output_type -> pb.users.pbuser.DeleteHardOneUserResponse
-	12, // [12:21] is the sub-list for method output_type
-	3,  // [3:12] is the sub-list for method input_type
-	3,  // [3:3] is the sub-list for extension type_name
-	3,  // [3:3] is the sub-list for extension extendee
-	0,  // [0:3] is the sub-list for field type_name
+	26, // 3: pb.users.pbuser.VerifyTokenUserResponse.exp:type_name -> google.protobuf.Timestamp
+	26, // 4: pb.users.pbuser.VerifyTokenUserResponse.iat:type_name -> google.protobuf.Timestamp
+	26, // 5: pb.users.pbuser.VerifyTokenUserResponse.nbf:type_name -> google.protobuf.Timestamp
+	1,  // 6: pb.users.pbuser.UserService.CreateOneUser:input_type -> pb.users.pbuser.CreateOneUserRequest
+	6,  // 7: pb.users.pbuser.UserService.GetOneUser:input_type -> pb.users.pbuser.GetOneUserRequest
+	8,  // 8: pb.users.pbuser.UserService.GetOneCredentialUserByEmail:input_type -> pb.users.pbuser.GetOneCredentialUserByEmailRequest
+	4,  // 9: pb.users.pbuser.UserService.GetManyUser:input_type -> pb.users.pbuser.GetManyUserRequest
+	10, // 10: pb.users.pbuser.UserService.UpdateOnePasswordUser:input_type -> pb.users.pbuser.UpdateOnePasswordUserRequest
+	12, // 11: pb.users.pbuser.UserService.UpdateOneEmailUser:input_type -> pb.users.pbuser.UpdateOneEmailUserRequest
+	14, // 12: pb.users.pbuser.UserService.UpdateOneRoleUser:input_type -> pb.users.pbuser.UpdateOneRoleUserRequest
+	16, // 13: pb.users.pbuser.UserService.DeleteSoftOneUser:input_type -> pb.users.pbuser.DeleteSoftOneUserRequest
+	18, // 14: pb.users.pbuser.UserService.DeleteHardOneUser:input_type -> pb.users.pbuser.DeleteHardOneUserRequest
+	20, // 15: pb.users.pbuser.UserService.LoginUser:input_type -> pb.users.pbuser.LoginUserRequest
+	22, // 16: pb.users.pbuser.UserService.VerifyTokenUser:input_type -> pb.users.pbuser.VerifyTokenUserRequest
+	24, // 17: pb.users.pbuser.UserService.RefreshTokenUser:input_type -> pb.users.pbuser.RefreshTokenUserRequest
+	2,  // 18: pb.users.pbuser.UserService.CreateOneUser:output_type -> pb.users.pbuser.CreateOneUserResponse
+	7,  // 19: pb.users.pbuser.UserService.GetOneUser:output_type -> pb.users.pbuser.GetOneUserResponse
+	9,  // 20: pb.users.pbuser.UserService.GetOneCredentialUserByEmail:output_type -> pb.users.pbuser.GetOneCredentialUserByEmailResponse
+	5,  // 21: pb.users.pbuser.UserService.GetManyUser:output_type -> pb.users.pbuser.GetManyUserResponse
+	11, // 22: pb.users.pbuser.UserService.UpdateOnePasswordUser:output_type -> pb.users.pbuser.UpdateOnePasswordUserResponse
+	13, // 23: pb.users.pbuser.UserService.UpdateOneEmailUser:output_type -> pb.users.pbuser.UpdateOneEmailUserResponse
+	15, // 24: pb.users.pbuser.UserService.UpdateOneRoleUser:output_type -> pb.users.pbuser.UpdateOneRoleUserResponse
+	17, // 25: pb.users.pbuser.UserService.DeleteSoftOneUser:output_type -> pb.users.pbuser.DeleteSoftOneUserResponse
+	19, // 26: pb.users.pbuser.UserService.DeleteHardOneUser:output_type -> pb.users.pbuser.DeleteHardOneUserResponse
+	21, // 27: pb.users.pbuser.UserService.LoginUser:output_type -> pb.users.pbuser.LoginUserResponse
+	23, // 28: pb.users.pbuser.UserService.VerifyTokenUser:output_type -> pb.users.pbuser.VerifyTokenUserResponse
+	25, // 29: pb.users.pbuser.UserService.RefreshTokenUser:output_type -> pb.users.pbuser.RefreshTokenUserResponse
+	18, // [18:30] is the sub-list for method output_type
+	6,  // [6:18] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_pb_users_v1_users_proto_init() }
@@ -1179,7 +1542,7 @@ func file_pb_users_v1_users_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pb_users_v1_users_proto_rawDesc), len(file_pb_users_v1_users_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   19,
+			NumMessages:   25,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
