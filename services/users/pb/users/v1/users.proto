@@ -29,7 +29,7 @@ enum UserRole {
 message CreateOneUserRequest {
     string email = 2;
     string password = 3;
-    string role = 4;
+    UserRole role = 4;
 }
 
 message CreateOneUserResponse {

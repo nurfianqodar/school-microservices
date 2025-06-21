@@ -2,20 +2,179 @@ package svc
 
 import (
 	"context"
+	"log"
+	"sync"
 
+	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"github.com/nurfianqodar/school-microservices/services/users/db"
 	pbusers "github.com/nurfianqodar/school-microservices/services/users/pb/users/v1"
+	v "github.com/nurfianqodar/school-microservices/services/users/utils/validation"
+	"golang.org/x/crypto/bcrypt"
+	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type service struct {
-	q *db.Queries
 	pbusers.UnimplementedUserServiceServer
+	mu sync.Mutex
+	q  *db.Queries
 }
 
 func New() pbusers.UserServiceServer {
 	return &service{}
 }
 
-func (s *service) CreateOneUser(ctx context.Context, req *pbusers.CreateOneUserRequest) (*pbusers.CreateOneUserResponse, error) {
+func (s *service) CreateOneUser(
+	ctx context.Context,
+	req *pbusers.CreateOneUserRequest,
+) (*pbusers.CreateOneUserResponse, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	// Validate request
+	if err := v.Validate.Struct(req); err != nil {
+		if validationErrs, ok := err.(validator.ValidationErrors); ok {
+			st := status.New(codes.InvalidArgument, "invalid input data")
+			fieldViolations := make([]*epb.BadRequest_FieldViolation, 0, len(validationErrs))
+			for i, fieldError := range validationErrs {
+				fieldViolations[i] = &epb.BadRequest_FieldViolation{
+					Field:       fieldError.Field(),
+					Description: fieldError.Translate(v.Trans),
+					Reason:      fieldError.Translate(v.Trans),
+				}
+			}
+
+			ds, err := st.WithDetails(&epb.BadRequest{
+				FieldViolations: fieldViolations,
+			})
+
+			if err != nil {
+				log.Printf("error: failed to create error detail. %s", err.Error())
+				return nil, status.Error(codes.Internal, "internal server error")
+			}
+
+			return nil, ds.Err()
+		} else {
+			log.Printf("error: failed to validate data. %s", err.Error())
+			return nil, status.Error(codes.Internal, "internal server error")
+		}
+	}
+
+	// Check email avaliable
+	countEmail, err := s.q.CountEmailUser(ctx, req.Email)
+	if err != nil {
+		log.Printf("error: failed to count email. %s", err.Error())
+		return nil, status.Error(codes.Internal, "internal server error")
+	}
+	if countEmail != 0 {
+		return nil, status.Error(codes.AlreadyExists, "email already exist")
+	}
+
+	// Hash password
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Printf("error: failed to hash password. %s", err.Error())
+		return nil, status.Error(codes.Internal, "internal server error")
+	}
+
+	// Save to db
+	// -- Generate uuid
+	newUUID, err := uuid.NewV7()
+	if err != nil {
+		log.Printf("error: failed to generate new uuid v7. %s\n", err.Error())
+		return nil, status.Error(codes.Internal, "internal server error")
+	}
+
+	// Convert role
+	var role db.UserRole
+
+	switch req.Role {
+	case pbusers.UserRole_Unspecified:
+		return nil, status.Error(codes.InvalidArgument, "invalid user role")
+	case pbusers.UserRole_Teacher:
+		role = db.UserRoleTeacher
+	case pbusers.UserRole_Staff:
+		role = db.UserRoleStaff
+	case pbusers.UserRole_Student:
+		role = db.UserRoleStudent
+	case pbusers.UserRole_Parent:
+		role = db.UserRoleParent
+	default:
+		return nil, status.Error(codes.InvalidArgument, "invalid user role")
+	}
+
+	dbArgs := &db.CreateOneUserParams{
+		ID:           newUUID,
+		Email:        req.Email,
+		PasswordHash: string(passwordHash),
+		Role:         role,
+	}
+
+	result, err := s.q.CreateOneUser(ctx, dbArgs)
+	if err != nil {
+		log.Printf("error: failed to insert new user. %s\n", err.Error())
+		return nil, status.Error(codes.Internal, "internal server error")
+	}
+
+	return &pbusers.CreateOneUserResponse{
+		Id: result.String(),
+	}, nil
+}
+
+func (s *service) DeleteHardOneUser(
+	ctx context.Context,
+	req *pbusers.DeleteHardOneUserRequest,
+) (*pbusers.DeleteHardOneUserResponse, error) {
+	panic("not implemented")
+}
+
+func (s *service) DeleteSoftOneUser(
+	ctx context.Context,
+	req *pbusers.DeleteSoftOneUserRequest,
+) (*pbusers.DeleteSoftOneUserResponse, error) {
+	panic("not implemented")
+}
+
+func (s *service) GetManyUser(
+	ctx context.Context,
+	req *pbusers.GetManyUserRequest,
+) (*pbusers.GetManyUserResponse, error) {
+	panic("not implemented")
+}
+
+func (s *service) GetOneCredentialUserByEmail(
+	ctx context.Context,
+	req *pbusers.GetOneCredentialUserByEmailRequest,
+) (*pbusers.GetOneCredentialUserByEmailResponse, error) {
+	panic("not implemented")
+}
+
+func (s *service) GetOneUser(
+	ctx context.Context,
+	req *pbusers.GetOneUserRequest,
+) (*pbusers.GetOneUserResponse, error) {
+	panic("not implemented")
+}
+
+func (s *service) UpdateOneEmailUser(
+	ctx context.Context,
+	req *pbusers.UpdateOneEmailUserRequest,
+) (*pbusers.UpdateOneEmailUserResponse, error) {
+	panic("not implemented")
+}
+
+func (s *service) UpdateOnePasswordUser(
+	ctx context.Context,
+	req *pbusers.UpdateOnePasswordUserRequest,
+) (*pbusers.UpdateOnePasswordUserResponse, error) {
+	panic("not implemented")
+}
+
+func (s *service) UpdateOneRoleUser(
+	ctx context.Context,
+	req *pbusers.UpdateOneRoleUserRequest,
+) (*pbusers.UpdateOneRoleUserResponse, error) {
 	panic("not implemented")
 }

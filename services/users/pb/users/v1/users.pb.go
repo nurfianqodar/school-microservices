@@ -82,7 +82,7 @@ type CreateOneUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
 	Password      string                 `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
-	Role          string                 `protobuf:"bytes,4,opt,name=role,proto3" json:"role,omitempty"`
+	Role          UserRole               `protobuf:"varint,4,opt,name=role,proto3,enum=pb.users.pbuser.UserRole" json:"role,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -131,11 +131,11 @@ func (x *CreateOneUserRequest) GetPassword() string {
 	return ""
 }
 
-func (x *CreateOneUserRequest) GetRole() string {
+func (x *CreateOneUserRequest) GetRole() UserRole {
 	if x != nil {
 		return x.Role
 	}
-	return ""
+	return UserRole_Unspecified
 }
 
 type CreateOneUserResponse struct {
@@ -1030,11 +1030,11 @@ var File_pb_users_v1_users_proto protoreflect.FileDescriptor
 
 const file_pb_users_v1_users_proto_rawDesc = "" +
 	"\n" +
-	"\x17pb/users/v1/users.proto\x12\x0fpb.users.pbuser\"\\\n" +
+	"\x17pb/users/v1/users.proto\x12\x0fpb.users.pbuser\"w\n" +
 	"\x14CreateOneUserRequest\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
-	"\bpassword\x18\x03 \x01(\tR\bpassword\x12\x12\n" +
-	"\x04role\x18\x04 \x01(\tR\x04role\"'\n" +
+	"\bpassword\x18\x03 \x01(\tR\bpassword\x12-\n" +
+	"\x04role\x18\x04 \x01(\x0e2\x19.pb.users.pbuser.UserRoleR\x04role\"'\n" +
 	"\x15CreateOneUserResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"G\n" +
 	"\vUserSummary\x12\x0e\n" +
@@ -1140,31 +1140,32 @@ var file_pb_users_v1_users_proto_goTypes = []any{
 	(*DeleteHardOneUserResponse)(nil),           // 19: pb.users.pbuser.DeleteHardOneUserResponse
 }
 var file_pb_users_v1_users_proto_depIdxs = []int32{
-	3,  // 0: pb.users.pbuser.GetManyUserResponse.users:type_name -> pb.users.pbuser.UserSummary
-	0,  // 1: pb.users.pbuser.UpdateOneRoleUserRequest.role:type_name -> pb.users.pbuser.UserRole
-	1,  // 2: pb.users.pbuser.UserService.CreateOneUser:input_type -> pb.users.pbuser.CreateOneUserRequest
-	6,  // 3: pb.users.pbuser.UserService.GetOneUser:input_type -> pb.users.pbuser.GetOneUserRequest
-	8,  // 4: pb.users.pbuser.UserService.GetOneCredentialUserByEmail:input_type -> pb.users.pbuser.GetOneCredentialUserByEmailRequest
-	4,  // 5: pb.users.pbuser.UserService.GetManyUser:input_type -> pb.users.pbuser.GetManyUserRequest
-	10, // 6: pb.users.pbuser.UserService.UpdateOnePasswordUser:input_type -> pb.users.pbuser.UpdateOnePasswordUserRequest
-	12, // 7: pb.users.pbuser.UserService.UpdateOneEmailUser:input_type -> pb.users.pbuser.UpdateOneEmailUserRequest
-	14, // 8: pb.users.pbuser.UserService.UpdateOneRoleUser:input_type -> pb.users.pbuser.UpdateOneRoleUserRequest
-	16, // 9: pb.users.pbuser.UserService.DeleteSoftOneUser:input_type -> pb.users.pbuser.DeleteSoftOneUserRequest
-	18, // 10: pb.users.pbuser.UserService.DeleteHardOneUser:input_type -> pb.users.pbuser.DeleteHardOneUserRequest
-	2,  // 11: pb.users.pbuser.UserService.CreateOneUser:output_type -> pb.users.pbuser.CreateOneUserResponse
-	7,  // 12: pb.users.pbuser.UserService.GetOneUser:output_type -> pb.users.pbuser.GetOneUserResponse
-	9,  // 13: pb.users.pbuser.UserService.GetOneCredentialUserByEmail:output_type -> pb.users.pbuser.GetOneCredentialUserByEmailResponse
-	5,  // 14: pb.users.pbuser.UserService.GetManyUser:output_type -> pb.users.pbuser.GetManyUserResponse
-	11, // 15: pb.users.pbuser.UserService.UpdateOnePasswordUser:output_type -> pb.users.pbuser.UpdateOnePasswordUserResponse
-	13, // 16: pb.users.pbuser.UserService.UpdateOneEmailUser:output_type -> pb.users.pbuser.UpdateOneEmailUserResponse
-	15, // 17: pb.users.pbuser.UserService.UpdateOneRoleUser:output_type -> pb.users.pbuser.UpdateOneRoleUserResponse
-	17, // 18: pb.users.pbuser.UserService.DeleteSoftOneUser:output_type -> pb.users.pbuser.DeleteSoftOneUserResponse
-	19, // 19: pb.users.pbuser.UserService.DeleteHardOneUser:output_type -> pb.users.pbuser.DeleteHardOneUserResponse
-	11, // [11:20] is the sub-list for method output_type
-	2,  // [2:11] is the sub-list for method input_type
-	2,  // [2:2] is the sub-list for extension type_name
-	2,  // [2:2] is the sub-list for extension extendee
-	0,  // [0:2] is the sub-list for field type_name
+	0,  // 0: pb.users.pbuser.CreateOneUserRequest.role:type_name -> pb.users.pbuser.UserRole
+	3,  // 1: pb.users.pbuser.GetManyUserResponse.users:type_name -> pb.users.pbuser.UserSummary
+	0,  // 2: pb.users.pbuser.UpdateOneRoleUserRequest.role:type_name -> pb.users.pbuser.UserRole
+	1,  // 3: pb.users.pbuser.UserService.CreateOneUser:input_type -> pb.users.pbuser.CreateOneUserRequest
+	6,  // 4: pb.users.pbuser.UserService.GetOneUser:input_type -> pb.users.pbuser.GetOneUserRequest
+	8,  // 5: pb.users.pbuser.UserService.GetOneCredentialUserByEmail:input_type -> pb.users.pbuser.GetOneCredentialUserByEmailRequest
+	4,  // 6: pb.users.pbuser.UserService.GetManyUser:input_type -> pb.users.pbuser.GetManyUserRequest
+	10, // 7: pb.users.pbuser.UserService.UpdateOnePasswordUser:input_type -> pb.users.pbuser.UpdateOnePasswordUserRequest
+	12, // 8: pb.users.pbuser.UserService.UpdateOneEmailUser:input_type -> pb.users.pbuser.UpdateOneEmailUserRequest
+	14, // 9: pb.users.pbuser.UserService.UpdateOneRoleUser:input_type -> pb.users.pbuser.UpdateOneRoleUserRequest
+	16, // 10: pb.users.pbuser.UserService.DeleteSoftOneUser:input_type -> pb.users.pbuser.DeleteSoftOneUserRequest
+	18, // 11: pb.users.pbuser.UserService.DeleteHardOneUser:input_type -> pb.users.pbuser.DeleteHardOneUserRequest
+	2,  // 12: pb.users.pbuser.UserService.CreateOneUser:output_type -> pb.users.pbuser.CreateOneUserResponse
+	7,  // 13: pb.users.pbuser.UserService.GetOneUser:output_type -> pb.users.pbuser.GetOneUserResponse
+	9,  // 14: pb.users.pbuser.UserService.GetOneCredentialUserByEmail:output_type -> pb.users.pbuser.GetOneCredentialUserByEmailResponse
+	5,  // 15: pb.users.pbuser.UserService.GetManyUser:output_type -> pb.users.pbuser.GetManyUserResponse
+	11, // 16: pb.users.pbuser.UserService.UpdateOnePasswordUser:output_type -> pb.users.pbuser.UpdateOnePasswordUserResponse
+	13, // 17: pb.users.pbuser.UserService.UpdateOneEmailUser:output_type -> pb.users.pbuser.UpdateOneEmailUserResponse
+	15, // 18: pb.users.pbuser.UserService.UpdateOneRoleUser:output_type -> pb.users.pbuser.UpdateOneRoleUserResponse
+	17, // 19: pb.users.pbuser.UserService.DeleteSoftOneUser:output_type -> pb.users.pbuser.DeleteSoftOneUserResponse
+	19, // 20: pb.users.pbuser.UserService.DeleteHardOneUser:output_type -> pb.users.pbuser.DeleteHardOneUserResponse
+	12, // [12:21] is the sub-list for method output_type
+	3,  // [3:12] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_pb_users_v1_users_proto_init() }
