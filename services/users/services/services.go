@@ -70,24 +70,13 @@ func (s *service) CreateOneUser(
 		return nil, errs.ErrInternalServer
 	}
 
-	// Convert role
-	var role db.UserRole
-
-	switch req.Role {
-	case pbusers.UserRole_Unspecified:
-		return nil, status.Error(codes.InvalidArgument, "invalid user role")
-	case pbusers.UserRole_Teacher:
-		role = db.UserRoleTeacher
-	case pbusers.UserRole_Staff:
-		role = db.UserRoleStaff
-	case pbusers.UserRole_Student:
-		role = db.UserRoleStudent
-	case pbusers.UserRole_Parent:
-		role = db.UserRoleParent
-	default:
-		return nil, status.Error(codes.InvalidArgument, "invalid user role")
+	// -- Convert role
+	role, err := convertRole(req.Role)
+	if err != nil {
+		return nil, err
 	}
 
+	// -- Create db args instance
 	dbArgs := &db.CreateOneUserParams{
 		ID:           newUUID,
 		Email:        req.Email,
@@ -95,6 +84,7 @@ func (s *service) CreateOneUser(
 		Role:         role,
 	}
 
+	// -- execute query
 	result, err := s.q.CreateOneUser(ctx, dbArgs)
 	if err != nil {
 		log.Printf("error: failed to insert new user. %s\n", err.Error())
