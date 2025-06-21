@@ -24,8 +24,11 @@ type service struct {
 	q  *db.Queries
 }
 
-func New() pbusers.UserServiceServer {
-	return &service{}
+func New(q *db.Queries) pbusers.UserServiceServer {
+	return &service{
+		q:  q,
+		mu: sync.Mutex{},
+	}
 }
 
 func (s *service) CreateOneUser(
