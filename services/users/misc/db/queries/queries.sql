@@ -68,4 +68,4 @@ WHERE email = $1;
 
 -- name: CountIDUser :one
 SELECT COUNT(*) FROM users
-WHERE email = $1;
+WHERE id = $1;

@@ -26,11 +26,11 @@ func (q *Queries) CountEmailUser(ctx context.Context, email string) (int64, erro
 
 const countIDUser = `-- name: CountIDUser :one
 SELECT COUNT(*) FROM users
-WHERE email = $1
+WHERE id = $1
 `
 
-func (q *Queries) CountIDUser(ctx context.Context, email string) (int64, error) {
-	row := q.db.QueryRow(ctx, countIDUser, email)
+func (q *Queries) CountIDUser(ctx context.Context, id uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countIDUser, id)
 	var count int64
 	err := row.Scan(&count)
 	return count, err

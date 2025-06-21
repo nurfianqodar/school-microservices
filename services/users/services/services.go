@@ -18,6 +18,10 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+var (
+	errUserNotFound = status.Error(codes.NotFound, "user not found")
+)
+
 type service struct {
 	pbusers.UnimplementedUserServiceServer
 	mu sync.Mutex
@@ -112,7 +116,30 @@ func (s *service) DeleteHardOneUser(
 	ctx context.Context,
 	req *pbusers.DeleteHardOneUserRequest,
 ) (*pbusers.DeleteHardOneUserResponse, error) {
-	panic("not implemented")
+	// count user by id
+	reqUUID, err := uuid.Parse(req.Id)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid uuid")
+	}
+
+	count, err := s.q.CountIDUser(ctx, reqUUID)
+	if err != nil {
+		log.Printf("error: failed to count user by id: %e\n", err)
+		return nil, errs.ErrInternalServer
+	}
+	if count == 0 {
+		return nil, errUserNotFound
+	}
+
+	deletedID, err := s.q.DeleteHardOneUser(ctx, reqUUID)
+	if err != nil {
+		log.Printf("error: failed to hard delete user by id: %e\n", err)
+		return nil, errs.ErrInternalServer
+	}
+
+	return &pbusers.DeleteHardOneUserResponse{
+		Id: deletedID.String(),
+	}, nil
 }
 
 func (s *service) DeleteSoftOneUser(

@@ -40,4 +40,6 @@ func TestCreateUser(t *testing.T) {
 		t.Fail()
 	}
 	t.Log(res)
+
+	_, _ = service.DeleteHardOneUser(context.TODO(), &pbusers.DeleteHardOneUserRequest{Id: res.Id})
 }
