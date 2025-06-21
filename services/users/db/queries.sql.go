@@ -78,7 +78,7 @@ func (q *Queries) DeleteHardOneUser(ctx context.Context, id uuid.UUID) (uuid.UUI
 const deleteSoftOneUser = `-- name: DeleteSoftOneUser :one
 UPDATE users
 SET deleted_at = CURRENT_TIMESTAMP
-WHERE id = $1 AND deleted_at IS NOT NULL
+WHERE id = $1 AND deleted_at IS NULL
 RETURNING id
 `
 
@@ -136,7 +136,7 @@ SELECT
     password_hash
 FROM users
 WHERE
-    email = $1 AND deleted_at IS NOT NULL
+    email = $1 AND deleted_at IS NULL
 `
 
 type GetOneCredentialUserByEmailRow struct {
@@ -159,7 +159,7 @@ SELECT
     created_at,
     updated_at
 FROM users
-WHERE id = $1 AND deleted_at IS NOT NULL
+WHERE id = $1 AND deleted_at IS NULL
 `
 
 type GetOneUserRow struct {
@@ -186,7 +186,7 @@ func (q *Queries) GetOneUser(ctx context.Context, id uuid.UUID) (*GetOneUserRow,
 const updateOneEmailUser = `-- name: UpdateOneEmailUser :one
 UPDATE users
 SET email = $2
-WHERE id = $1 AND deleted_at IS NOT NULL
+WHERE id = $1 AND deleted_at IS NULL
 RETURNING id
 `
 
@@ -205,7 +205,7 @@ func (q *Queries) UpdateOneEmailUser(ctx context.Context, arg *UpdateOneEmailUse
 const updateOnePasswordUser = `-- name: UpdateOnePasswordUser :one
 UPDATE users
 SET password_hash = $2
-WHERE id = $1 AND deleted_at IS NOT NULL
+WHERE id = $1 AND deleted_at IS NULL
 RETURNING id
 `
 
@@ -224,7 +224,7 @@ func (q *Queries) UpdateOnePasswordUser(ctx context.Context, arg *UpdateOnePassw
 const updateOneRoleUser = `-- name: UpdateOneRoleUser :one
 UPDATE users
 SET role = $2
-WHERE id = $1 AND deleted_at IS NOT NULL
+WHERE id = $1 AND deleted_at IS NULL
 RETURNING id
 `
 

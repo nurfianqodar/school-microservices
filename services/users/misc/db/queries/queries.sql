@@ -13,7 +13,7 @@ SELECT
     created_at,
     updated_at
 FROM users
-WHERE id = $1 AND deleted_at IS NOT NULL;
+WHERE id = $1 AND deleted_at IS NULL;
 
 -- name: GetOneCredentialUserByEmail :one
 SELECT
@@ -21,7 +21,7 @@ SELECT
     password_hash
 FROM users
 WHERE
-    email = $1 AND deleted_at IS NOT NULL;
+    email = $1 AND deleted_at IS NULL;
 
 -- name: GetManyUser :many
 SELECT
@@ -36,25 +36,25 @@ LIMIT $1 OFFSET $2;
 -- name: UpdateOnePasswordUser :one
 UPDATE users
 SET password_hash = $2
-WHERE id = $1 AND deleted_at IS NOT NULL
+WHERE id = $1 AND deleted_at IS NULL
 RETURNING id;
 
 -- name: UpdateOneEmailUser :one
 UPDATE users
 SET email = $2
-WHERE id = $1 AND deleted_at IS NOT NULL
+WHERE id = $1 AND deleted_at IS NULL
 RETURNING id;
 
 -- name: UpdateOneRoleUser :one
 UPDATE users
 SET role = $2
-WHERE id = $1 AND deleted_at IS NOT NULL
+WHERE id = $1 AND deleted_at IS NULL
 RETURNING id;
 
 -- name: DeleteSoftOneUser :one
 UPDATE users
 SET deleted_at = CURRENT_TIMESTAMP
-WHERE id = $1 AND deleted_at IS NOT NULL
+WHERE id = $1 AND deleted_at IS NULL
 RETURNING id;
 
 -- name: DeleteHardOneUser :one
