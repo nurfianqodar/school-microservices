@@ -10,6 +10,10 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+var (
+	ErrInvalidCredential = status.Error(codes.Unauthenticated, "invalid username or password")
+)
+
 func ConvertValidationError(e validator.ValidationErrors, trans ut.Translator) error {
 	st := status.New(codes.InvalidArgument, "invalid input data")
 	fieldViolations := make([]*epb.BadRequest_FieldViolation, 0, len(e))

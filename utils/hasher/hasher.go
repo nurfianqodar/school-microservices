@@ -8,13 +8,10 @@ import (
 	"log"
 	"strings"
 
+	"github.com/nurfianqodar/school-microservices/utils/errs"
 	"golang.org/x/crypto/argon2"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-)
-
-var (
-	ErrInvalidPassword = status.Error(codes.Unauthenticated, "invalid password")
 )
 
 // Hash config
@@ -58,7 +55,7 @@ func CompareHashWithPassword(hash string, password string) error {
 	}
 
 	log.Println("error: password is incompatible")
-	return ErrInvalidPassword
+	return errs.ErrInvalidCredential
 }
 
 func genRandomBytes(n uint32) ([]byte, error) {
@@ -75,7 +72,7 @@ func decodeHash(encodedHashString string) (c *Config, salt, hash []byte, err err
 	vals := strings.Split(encodedHashString, "$")
 	if len(vals) != 6 {
 		log.Println("error: invalid hash format")
-		return nil, nil, nil, ErrInvalidPassword
+		return nil, nil, nil, errs.ErrInvalidCredential
 	}
 
 	var version int
@@ -85,20 +82,20 @@ func decodeHash(encodedHashString string) (c *Config, salt, hash []byte, err err
 	}
 	if version != argon2.Version {
 		log.Println("error: incompatible argon2 version")
-		return nil, nil, nil, ErrInvalidPassword
+		return nil, nil, nil, errs.ErrInvalidCredential
 	}
 
 	c = new(Config)
 	_, err = fmt.Sscanf(vals[3], "m=%d,t=%d,p=%d", &c.Memory, &c.Iterations, &c.Parallelism)
 	if err != nil {
 		log.Println("error: unable to parse argon2 configuration")
-		return nil, nil, nil, ErrInvalidPassword
+		return nil, nil, nil, errs.ErrInvalidCredential
 	}
 
 	salt, err = base64.RawStdEncoding.Strict().DecodeString(vals[4])
 	if err != nil {
 		log.Printf("error: unable to get or decode salt %s\n", err.Error())
-		return nil, nil, nil, ErrInvalidPassword
+		return nil, nil, nil, errs.ErrInvalidCredential
 	}
 	c.SaltLength = uint32(len(salt))
 
