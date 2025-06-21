@@ -80,7 +80,6 @@ func (UserRole) EnumDescriptor() ([]byte, []int) {
 // Create user message
 type CreateOneUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
 	Password      string                 `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
 	Role          string                 `protobuf:"bytes,4,opt,name=role,proto3" json:"role,omitempty"`
@@ -116,13 +115,6 @@ func (x *CreateOneUserRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use CreateOneUserRequest.ProtoReflect.Descriptor instead.
 func (*CreateOneUserRequest) Descriptor() ([]byte, []int) {
 	return file_pb_users_v1_users_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *CreateOneUserRequest) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
 }
 
 func (x *CreateOneUserRequest) GetEmail() string {
@@ -1038,9 +1030,8 @@ var File_pb_users_v1_users_proto protoreflect.FileDescriptor
 
 const file_pb_users_v1_users_proto_rawDesc = "" +
 	"\n" +
-	"\x17pb/users/v1/users.proto\x12\x0fpb.users.pbuser\"l\n" +
-	"\x14CreateOneUserRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
+	"\x17pb/users/v1/users.proto\x12\x0fpb.users.pbuser\"\\\n" +
+	"\x14CreateOneUserRequest\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x03 \x01(\tR\bpassword\x12\x12\n" +
 	"\x04role\x18\x04 \x01(\tR\x04role\"'\n" +

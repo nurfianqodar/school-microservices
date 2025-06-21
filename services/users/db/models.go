@@ -8,6 +8,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -33,8 +34,8 @@ func (e *UserRole) Scan(src interface{}) error {
 }
 
 type NullUserRole struct {
-	UserRole UserRole `json:"userRole"`
-	Valid    bool     `json:"valid"` // Valid is true if UserRole is not NULL
+	UserRole UserRole
+	Valid    bool // Valid is true if UserRole is not NULL
 }
 
 // Scan implements the Scanner interface.
@@ -56,11 +57,11 @@ func (ns NullUserRole) Value() (driver.Value, error) {
 }
 
 type User struct {
-	ID           pgtype.UUID        `json:"id"`
-	Email        string             `json:"email"`
-	Role         UserRole           `json:"role"`
-	PasswordHash string             `json:"passwordHash"`
-	CreatedAt    pgtype.Timestamptz `json:"createdAt"`
-	UpdatedAt    pgtype.Timestamptz `json:"updatedAt"`
-	DeletedAt    pgtype.Timestamptz `json:"deletedAt"`
+	ID           uuid.UUID
+	Email        string
+	Role         UserRole
+	PasswordHash string
+	CreatedAt    pgtype.Timestamptz
+	UpdatedAt    pgtype.Timestamptz
+	DeletedAt    pgtype.Timestamptz
 }

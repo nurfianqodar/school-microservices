@@ -8,14 +8,17 @@ sql:
         sql_package: pgx/v5
         out: db
         emit_pointers_for_null_types: true
-        emit_json_tags: true
         emit_empty_slices: true
         emit_result_struct_pointers: true
         emit_params_struct_pointers: true
-        json_tags_case_style: camel
         output_batch_file_name: batch.go
         output_db_file_name: db.go
         output_models_file_name: models.go
         output_querier_file_name: querier.go
         query_parameter_limit: 1
         omit_unused_structs: false
+        overrides:
+          - db_type: uuid
+            go_type:
+              import: "github.com/google/uuid"
+              type: "UUID"
