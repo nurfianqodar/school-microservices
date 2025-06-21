@@ -398,7 +398,7 @@ type GetOneUserResponse struct {
 	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
 	Role          string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
 	CreatedAt     string                 `protobuf:"bytes,4,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	DeletedAt     string                 `protobuf:"bytes,5,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
+	UpdatedAt     string                 `protobuf:"bytes,5,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -461,9 +461,9 @@ func (x *GetOneUserResponse) GetCreatedAt() string {
 	return ""
 }
 
-func (x *GetOneUserResponse) GetDeletedAt() string {
+func (x *GetOneUserResponse) GetUpdatedAt() string {
 	if x != nil {
-		return x.DeletedAt
+		return x.UpdatedAt
 	}
 	return ""
 }
@@ -1064,7 +1064,7 @@ const file_pb_users_v1_users_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x04 \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
-	"deleted_at\x18\x05 \x01(\tR\tdeletedAt\":\n" +
+	"updated_at\x18\x05 \x01(\tR\tupdatedAt\":\n" +
 	"\"GetOneCredentialUserByEmailRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\"Z\n" +
 	"#GetOneCredentialUserByEmailResponse\x12\x0e\n" +
