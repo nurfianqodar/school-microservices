@@ -18,12 +18,12 @@ var (
 func ConvertValidationError(e validator.ValidationErrors, trans ut.Translator) error {
 	st := status.New(codes.InvalidArgument, "invalid input data")
 	fieldViolations := make([]*epb.BadRequest_FieldViolation, 0, len(e))
-	for i, fieldError := range e {
-		fieldViolations[i] = &epb.BadRequest_FieldViolation{
+	for _, fieldError := range e {
+		fieldViolations = append(fieldViolations, &epb.BadRequest_FieldViolation{
 			Field:       fieldError.Field(),
 			Description: fieldError.Translate(trans),
 			Reason:      fieldError.Translate(trans),
-		}
+		})
 	}
 	ds, err := st.WithDetails(&epb.BadRequest{
 		FieldViolations: fieldViolations,

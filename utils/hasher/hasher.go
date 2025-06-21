@@ -10,8 +10,6 @@ import (
 
 	"github.com/nurfianqodar/school-microservices/utils/errs"
 	"golang.org/x/crypto/argon2"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 // Hash config
@@ -63,7 +61,7 @@ func genRandomBytes(n uint32) ([]byte, error) {
 	_, err := rand.Read(b)
 	if err != nil {
 		log.Printf("error: failed creating random bytes. %s\n", err.Error())
-		return nil, status.Error(codes.Internal, "internal server error")
+		return nil, errs.ErrInternalServer
 	}
 	return b, nil
 }

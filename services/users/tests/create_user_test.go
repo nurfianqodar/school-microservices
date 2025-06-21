@@ -6,9 +6,12 @@ import (
 	"os"
 	"testing"
 
+	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
+
 	pbusers "github.com/nurfianqodar/school-microservices/services/users/pb/users/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 )
 
 func TestCreateUser(t *testing.T) {
@@ -31,13 +34,23 @@ func TestCreateUser(t *testing.T) {
 	}
 	service := pbusers.NewUserServiceClient(client)
 	res, err := service.CreateOneUser(context.TODO(), &pbusers.CreateOneUserRequest{
-		Email:    "dummy@gmail.com",
-		Password: "secretpassword",
+		Email:    "dummy@email.com",
+		Password: "secret",
 		Role:     pbusers.UserRole_Student,
 	})
 	if err != nil {
-		t.Log(err)
-		t.Fail()
+		st := status.Convert(err)
+		for _, d := range st.Details() {
+			switch info := d.(type) {
+
+			case *epb.BadRequest_FieldViolation:
+				t.Logf("%s\n", info)
+			default:
+				t.Logf("%s\n", info)
+
+			}
+		}
+		t.FailNow()
 	}
 	t.Log(res)
 
