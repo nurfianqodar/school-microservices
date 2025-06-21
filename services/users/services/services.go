@@ -48,7 +48,7 @@ func (s *service) CreateOneUser(
 			return nil, errs.ConvertValidationError(validationErrs, v.Trans)
 		} else {
 			log.Printf("error: failed to validate data. %s", err.Error())
-			return nil, status.Error(codes.Internal, "internal server error")
+			return nil, errs.ErrInternalServer
 		}
 	}
 
@@ -56,7 +56,7 @@ func (s *service) CreateOneUser(
 	countEmail, err := s.q.CountEmailUser(ctx, req.Email)
 	if err != nil {
 		log.Printf("error: failed to count email. %s", err.Error())
-		return nil, status.Error(codes.Internal, "internal server error")
+		return nil, errs.ErrInternalServer
 	}
 	if countEmail != 0 {
 		return nil, status.Error(codes.AlreadyExists, "email already exist")
@@ -73,7 +73,7 @@ func (s *service) CreateOneUser(
 	newUUID, err := uuid.NewV7()
 	if err != nil {
 		log.Printf("error: failed to generate new uuid v7. %s\n", err.Error())
-		return nil, status.Error(codes.Internal, "internal server error")
+		return nil, errs.ErrInternalServer
 	}
 
 	// Convert role
@@ -104,7 +104,7 @@ func (s *service) CreateOneUser(
 	result, err := s.q.CreateOneUser(ctx, dbArgs)
 	if err != nil {
 		log.Printf("error: failed to insert new user. %s\n", err.Error())
-		return nil, status.Error(codes.Internal, "internal server error")
+		return nil, errs.ErrInternalServer
 	}
 
 	return &pbusers.CreateOneUserResponse{
@@ -199,7 +199,7 @@ func (s *service) LoginUser(
 	count, err := s.q.CountEmailUser(ctx, req.Email)
 	if err != nil {
 		log.Printf("error: failed to count user by email. %s", err.Error())
-		return nil, status.Error(codes.Internal, "internal server error")
+		return nil, errs.ErrInternalServer
 	}
 	if count != 1 {
 		return nil, errs.ErrInvalidCredential
@@ -209,7 +209,7 @@ func (s *service) LoginUser(
 	creds, err := s.q.GetOneCredentialUserByEmail(ctx, req.Email)
 	if err != nil {
 		log.Printf("error: failed to get credential. %s", err.Error())
-		return nil, status.Error(codes.Internal, "internal server error")
+		return nil, errs.ErrInternalServer
 	}
 
 	// Compare password and hash

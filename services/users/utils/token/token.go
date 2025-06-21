@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/nurfianqodar/school-microservices/utils/errs"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -75,13 +76,14 @@ func CreateToken(typ TokenType, sub string, expAfter time.Duration, aud []string
 
 	appSecret, ok := os.LookupEnv("SECRET")
 	if !ok {
-		log.Fatalln("error: unable to get SECRET environment variable")
+		log.Println("error: unable to get SECRET environment variable")
+		return "", errs.ErrInternalServer
 	}
 
 	tokenString, err := token.SignedString([]byte(appSecret))
 	if err != nil {
 		log.Printf("error: failed to sign token. %s\n", err.Error())
-		return "", status.Error(codes.Internal, "internal server error")
+		return "", errs.ErrInternalServer
 	}
 
 	return tokenString, nil
