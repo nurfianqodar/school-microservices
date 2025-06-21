@@ -12,6 +12,7 @@ import (
 
 var (
 	ErrInvalidCredential = status.Error(codes.Unauthenticated, "invalid username or password")
+	ErrInternalServer    = status.Error(codes.Internal, "internal server error")
 )
 
 func ConvertValidationError(e validator.ValidationErrors, trans ut.Translator) error {
