@@ -3,7 +3,6 @@ package svc
 import (
 	"context"
 	"log"
-	"sync"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -24,14 +23,12 @@ var (
 
 type service struct {
 	pbusers.UnimplementedUserServiceServer
-	mu sync.Mutex
-	q  *db.Queries
+	q *db.Queries
 }
 
 func New(q *db.Queries) pbusers.UserServiceServer {
 	return &service{
-		q:  q,
-		mu: sync.Mutex{},
+		q: q,
 	}
 }
 
@@ -39,9 +36,6 @@ func (s *service) CreateOneUser(
 	ctx context.Context,
 	req *pbusers.CreateOneUserRequest,
 ) (*pbusers.CreateOneUserResponse, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
 	// Validate request
 	if err := v.Validate.Struct(req); err != nil {
 		if validationErrs, ok := err.(validator.ValidationErrors); ok {

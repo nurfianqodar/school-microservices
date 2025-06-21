@@ -21,13 +21,13 @@ type Config struct {
 var DefaultConfig = &Config{
 	Memory:      64 * 1024,
 	Iterations:  3,
-	Parallelism: 2,
+	Parallelism: 4,
 	SaltLength:  16,
 	KeyLength:   32,
 }
 
 func GenerateFromPassword(password string, c *Config) (string, error) {
-	saltBytes, err := genRandomBytes(c.KeyLength)
+	saltBytes, err := genRandomBytes(c.SaltLength)
 	if err != nil {
 		return "", err
 	}
