@@ -10,8 +10,8 @@ import (
 	"github.com/nurfianqodar/school-microservices/services/users/db"
 	pbusers "github.com/nurfianqodar/school-microservices/services/users/pb/users/v1"
 	v "github.com/nurfianqodar/school-microservices/services/users/utils/validation"
-	"golang.org/x/crypto/bcrypt"
-	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
+	"github.com/nurfianqodar/school-microservices/utils/errs"
+	"github.com/nurfianqodar/school-microservices/utils/hasher"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -36,26 +36,7 @@ func (s *service) CreateOneUser(
 	// Validate request
 	if err := v.Validate.Struct(req); err != nil {
 		if validationErrs, ok := err.(validator.ValidationErrors); ok {
-			st := status.New(codes.InvalidArgument, "invalid input data")
-			fieldViolations := make([]*epb.BadRequest_FieldViolation, 0, len(validationErrs))
-			for i, fieldError := range validationErrs {
-				fieldViolations[i] = &epb.BadRequest_FieldViolation{
-					Field:       fieldError.Field(),
-					Description: fieldError.Translate(v.Trans),
-					Reason:      fieldError.Translate(v.Trans),
-				}
-			}
-
-			ds, err := st.WithDetails(&epb.BadRequest{
-				FieldViolations: fieldViolations,
-			})
-
-			if err != nil {
-				log.Printf("error: failed to create error detail. %s", err.Error())
-				return nil, status.Error(codes.Internal, "internal server error")
-			}
-
-			return nil, ds.Err()
+			return nil, errs.ConvertValidationError(validationErrs, v.Trans)
 		} else {
 			log.Printf("error: failed to validate data. %s", err.Error())
 			return nil, status.Error(codes.Internal, "internal server error")
@@ -73,10 +54,9 @@ func (s *service) CreateOneUser(
 	}
 
 	// Hash password
-	passwordHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	passwordHash, err := hasher.GenerateFromPassword(req.Password, hasher.DefaultConfig)
 	if err != nil {
-		log.Printf("error: failed to hash password. %s", err.Error())
-		return nil, status.Error(codes.Internal, "internal server error")
+		return nil, err
 	}
 
 	// Save to db
