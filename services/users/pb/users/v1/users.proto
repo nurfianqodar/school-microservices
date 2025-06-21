@@ -47,7 +47,7 @@ message CreateOneUserResponse {
 message UserSummary {
     string id = 1;
     string email = 2;
-    string role = 3;
+    UserRole role = 3;
 }
 
 message GetManyUserRequest {

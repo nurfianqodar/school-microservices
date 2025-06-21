@@ -137,7 +137,40 @@ func (s *service) GetManyUser(
 	ctx context.Context,
 	req *pbusers.GetManyUserRequest,
 ) (*pbusers.GetManyUserResponse, error) {
-	panic("not implemented")
+	res, err := s.q.GetManyUser(ctx, &db.GetManyUserParams{
+		Limit:  int32(req.Limit),
+		Offset: int32(req.Offset),
+	})
+	if err != nil {
+		return nil, errs.ErrInternalServer
+	}
+	users := make([]*pbusers.UserSummary, 0, len(res))
+	for _, user := range res {
+		var pbRole pbusers.UserRole
+
+		switch user.Role {
+		case db.UserRoleParent:
+			pbRole = pbusers.UserRole_Parent
+		case db.UserRoleStaff:
+			pbRole = pbusers.UserRole_Staff
+		case db.UserRoleStudent:
+			pbRole = pbusers.UserRole_Student
+		case db.UserRoleTeacher:
+			pbRole = pbusers.UserRole_Teacher
+		default:
+			pbRole = pbusers.UserRole_Unspecified
+		}
+
+		users = append(users, &pbusers.UserSummary{
+			Id:    user.ID.String(),
+			Email: user.Email,
+			Role:  pbRole,
+		})
+	}
+
+	return &pbusers.GetManyUserResponse{
+		Users: users,
+	}, nil
 }
 
 func (s *service) GetOneCredentialUserByEmail(
