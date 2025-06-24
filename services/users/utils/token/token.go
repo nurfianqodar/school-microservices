@@ -99,6 +99,7 @@ func VerifyToken(tokenString string) (*Claims, error) {
 		appSecret, ok := os.LookupEnv("SECRET")
 		if !ok {
 			log.Fatalln("error: unable to get SECRET environment variable")
+			// Exit when app secret not set
 		}
 		return []byte(appSecret), nil
 	})

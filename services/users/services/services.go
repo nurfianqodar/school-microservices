@@ -15,23 +15,27 @@ import (
 	"github.com/nurfianqodar/school-microservices/utils/hasher"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 var (
 	errUserNotFound = status.Error(codes.NotFound, "user not found")
 )
 
+// Service server
 type service struct {
 	pbusers.UnimplementedUserServiceServer
 	q *db.Queries
 }
 
+// Constructor
 func New(q *db.Queries) pbusers.UserServiceServer {
 	return &service{
 		q: q,
 	}
 }
 
+// Service Implementation
 func (s *service) CreateOneUser(
 	ctx context.Context,
 	req *pbusers.CreateOneUserRequest,
@@ -71,7 +75,7 @@ func (s *service) CreateOneUser(
 	}
 
 	// -- Convert role
-	role, err := convertRole(req.Role)
+	role, err := convertRoleProtoToRoleDb(req.Role)
 	if err != nil {
 		return nil, err
 	}
@@ -100,12 +104,13 @@ func (s *service) DeleteHardOneUser(
 	ctx context.Context,
 	req *pbusers.DeleteHardOneUserRequest,
 ) (*pbusers.DeleteHardOneUserResponse, error) {
-	// count user by id
+	// Parse uuid
 	reqUUID, err := uuid.Parse(req.Id)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid uuid")
 	}
 
+	// count user by id
 	count, err := s.q.CountIDUser(ctx, reqUUID)
 	if err != nil {
 		log.Printf("error: failed to count user by id: %e\n", err)
@@ -115,6 +120,7 @@ func (s *service) DeleteHardOneUser(
 		return nil, errUserNotFound
 	}
 
+	// Delete user
 	deletedID, err := s.q.DeleteHardOneUser(ctx, reqUUID)
 	if err != nil {
 		log.Printf("error: failed to hard delete user by id: %e\n", err)
@@ -130,7 +136,31 @@ func (s *service) DeleteSoftOneUser(
 	ctx context.Context,
 	req *pbusers.DeleteSoftOneUserRequest,
 ) (*pbusers.DeleteSoftOneUserResponse, error) {
-	panic("not implemented")
+	reqUUID, err := uuid.Parse(req.Id)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid uuid")
+	}
+
+	// count user by id
+	count, err := s.q.CountIDUser(ctx, reqUUID)
+	if err != nil {
+		log.Printf("error: failed to count user by id: %e\n", err)
+		return nil, errs.ErrInternalServer
+	}
+	if count == 0 {
+		return nil, errUserNotFound
+	}
+
+	deletedID, err := s.q.DeleteSoftOneUser(ctx, reqUUID)
+	// Delete user
+	if err != nil {
+		log.Printf("error: failed to soft delete user by id: %e\n", err)
+		return nil, errs.ErrInternalServer
+	}
+
+	return &pbusers.DeleteSoftOneUserResponse{
+		Id: deletedID.String(),
+	}, nil
 }
 
 func (s *service) GetManyUser(
@@ -147,21 +177,7 @@ func (s *service) GetManyUser(
 	users := make([]*pbusers.UserSummary, 0, len(res))
 	log.Printf("found %d users\n", len(users))
 	for _, user := range res {
-		var pbRole pbusers.UserRole
-
-		switch user.Role {
-		case db.UserRoleParent:
-			pbRole = pbusers.UserRole_Parent
-		case db.UserRoleStaff:
-			pbRole = pbusers.UserRole_Staff
-		case db.UserRoleStudent:
-			pbRole = pbusers.UserRole_Student
-		case db.UserRoleTeacher:
-			pbRole = pbusers.UserRole_Teacher
-		default:
-			pbRole = pbusers.UserRole_Unspecified
-		}
-
+		pbRole := convertRoleDbToRoleProto(user.Role)
 		users = append(users, &pbusers.UserSummary{
 			Id:    user.ID.String(),
 			Email: user.Email,
@@ -174,39 +190,170 @@ func (s *service) GetManyUser(
 	}, nil
 }
 
-func (s *service) GetOneCredentialUserByEmail(
-	ctx context.Context,
-	req *pbusers.GetOneCredentialUserByEmailRequest,
-) (*pbusers.GetOneCredentialUserByEmailResponse, error) {
-	panic("not implemented")
-}
-
 func (s *service) GetOneUser(
 	ctx context.Context,
 	req *pbusers.GetOneUserRequest,
 ) (*pbusers.GetOneUserResponse, error) {
-	panic("not implemented")
+	reqUUID, err := uuid.Parse(req.Id)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid uuid")
+	}
+	count, err := s.q.CountIDUser(ctx, reqUUID)
+	if err != nil {
+		log.Printf("error: failed to count user by id: %e\n", err)
+		return nil, errs.ErrInternalServer
+	}
+	if count == 0 {
+		return nil, errUserNotFound
+	}
+	user, err := s.q.GetOneUser(ctx, reqUUID)
+	if err != nil {
+		log.Printf("error: failed to get one user by id: %e\n", err)
+		return nil, errs.ErrInternalServer
+	}
+	return &pbusers.GetOneUserResponse{
+		Id:        user.ID.String(),
+		Email:     user.Email,
+		Role:      convertRoleDbToRoleProto(user.Role),
+		CreatedAt: timestamppb.New(user.CreatedAt.Time),
+	}, nil
 }
 
 func (s *service) UpdateOneEmailUser(
 	ctx context.Context,
 	req *pbusers.UpdateOneEmailUserRequest,
 ) (*pbusers.UpdateOneEmailUserResponse, error) {
-	panic("not implemented")
+	// Parse uuid and validation
+	reqUUID, err := uuid.Parse(req.Id)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid uuid")
+	}
+	if err = v.Validate.Struct(req); err != nil {
+		if validationErr, ok := err.(validator.ValidationErrors); ok {
+			return nil, errs.ConvertValidationError(validationErr, v.Trans)
+		} else {
+			log.Printf("error: unable to use validator. %s", err.Error())
+			return nil, errs.ErrInternalServer
+		}
+	}
+
+	// Count user
+	count, err := s.q.CountIDUser(ctx, reqUUID)
+	if err != nil {
+		log.Printf("error: failed to count user by id: %e\n", err)
+		return nil, errs.ErrInternalServer
+	}
+	if count == 0 {
+		return nil, errUserNotFound
+	}
+
+	// Update
+	userID, err := s.q.UpdateOneEmailUser(ctx, &db.UpdateOneEmailUserParams{
+		ID:    reqUUID,
+		Email: req.Email,
+	})
+	if err != nil {
+		log.Printf("error: failed to update user email. %s", err.Error())
+		return nil, errs.ErrInternalServer
+	}
+	return &pbusers.UpdateOneEmailUserResponse{
+		Id: userID.String(),
+	}, nil
 }
 
 func (s *service) UpdateOnePasswordUser(
 	ctx context.Context,
 	req *pbusers.UpdateOnePasswordUserRequest,
 ) (*pbusers.UpdateOnePasswordUserResponse, error) {
-	panic("not implemented")
+	// Parse uuid and validation
+	reqUUID, err := uuid.Parse(req.Id)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid uuid")
+	}
+	if err = v.Validate.Struct(req); err != nil {
+		if validationErr, ok := err.(validator.ValidationErrors); ok {
+			return nil, errs.ConvertValidationError(validationErr, v.Trans)
+		} else {
+			log.Printf("error: unable to use validator. %s", err.Error())
+			return nil, errs.ErrInternalServer
+		}
+	}
+
+	// Count user
+	count, err := s.q.CountIDUser(ctx, reqUUID)
+	if err != nil {
+		log.Printf("error: failed to count user by id: %e\n", err)
+		return nil, errs.ErrInternalServer
+	}
+	if count == 0 {
+		return nil, errUserNotFound
+	}
+
+	// Hash password
+	hash, err := hasher.GenerateFromPassword(req.Password, hasher.DefaultConfig)
+	if err != nil {
+		log.Printf("error: failed to hash password. %e\n", err)
+	}
+
+	// Update
+	userID, err := s.q.UpdateOnePasswordUser(ctx, &db.UpdateOnePasswordUserParams{
+		ID:           reqUUID,
+		PasswordHash: hash,
+	})
+	if err != nil {
+		log.Printf("error: failed to update user email. %s", err.Error())
+		return nil, errs.ErrInternalServer
+	}
+	return &pbusers.UpdateOnePasswordUserResponse{
+		Id: userID.String(),
+	}, nil
 }
 
 func (s *service) UpdateOneRoleUser(
 	ctx context.Context,
 	req *pbusers.UpdateOneRoleUserRequest,
 ) (*pbusers.UpdateOneRoleUserResponse, error) {
-	panic("not implemented")
+	// Parse uuid and validation
+	reqUUID, err := uuid.Parse(req.Id)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid uuid")
+	}
+	if err = v.Validate.Struct(req); err != nil {
+		if validationErr, ok := err.(validator.ValidationErrors); ok {
+			return nil, errs.ConvertValidationError(validationErr, v.Trans)
+		} else {
+			log.Printf("error: unable to use validator. %s", err.Error())
+			return nil, errs.ErrInternalServer
+		}
+	}
+
+	// Count user
+	count, err := s.q.CountIDUser(ctx, reqUUID)
+	if err != nil {
+		log.Printf("error: failed to count user by id: %e\n", err)
+		return nil, errs.ErrInternalServer
+	}
+	if count == 0 {
+		return nil, errUserNotFound
+	}
+
+	role, err := convertRoleProtoToRoleDb(req.Role)
+	if err != nil {
+		return nil, err
+	}
+
+	// Update
+	userID, err := s.q.UpdateOneRoleUser(ctx, &db.UpdateOneRoleUserParams{
+		ID:   reqUUID,
+		Role: role,
+	})
+	if err != nil {
+		log.Printf("error: failed to update user email. %s", err.Error())
+		return nil, errs.ErrInternalServer
+	}
+	return &pbusers.UpdateOneRoleUserResponse{
+		Id: userID.String(),
+	}, nil
 }
 
 func (s *service) LoginUser(
@@ -249,5 +396,23 @@ func (s *service) LoginUser(
 	return &pbusers.LoginUserResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
+	}, nil
+}
+
+func (s *service) VerifyTokenUser(
+	ctx context.Context,
+	req *pbusers.VerifyTokenUserRequest,
+) (*pbusers.VerifyTokenUserResponse, error) {
+	claims, err := token.VerifyToken(req.AccessToken)
+	if err != nil {
+		return nil, err
+	}
+	return &pbusers.VerifyTokenUserResponse{
+		Exp: timestamppb.New(claims.Exp.Local()),
+		Iat: timestamppb.New(claims.Iat.Local()),
+		Nbf: timestamppb.New(claims.Nbf.Local()),
+		Iss: claims.Iss,
+		Sub: claims.Sub,
+		Aud: claims.Aud,
 	}, nil
 }

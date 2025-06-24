@@ -9,7 +9,6 @@ package pb.users.pbuser;
 service UserService {
     rpc CreateOneUser(CreateOneUserRequest) returns (CreateOneUserResponse) {}
     rpc GetOneUser(GetOneUserRequest) returns (GetOneUserResponse) {}
-    rpc GetOneCredentialUserByEmail(GetOneCredentialUserByEmailRequest) returns (GetOneCredentialUserByEmailResponse) {}
     rpc GetManyUser(GetManyUserRequest) returns (GetManyUserResponse) {}
     rpc UpdateOnePasswordUser(UpdateOnePasswordUserRequest) returns (UpdateOnePasswordUserResponse) {}
     rpc UpdateOneEmailUser(UpdateOneEmailUserRequest) returns (UpdateOneEmailUserResponse) {}
@@ -67,20 +66,12 @@ message GetOneUserRequest {
 message GetOneUserResponse {
     string id = 1;
     string email = 2;
-    string role = 3;
-    string created_at = 4;
-    string updated_at = 5;
+    UserRole role = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
 }
 
-// Get credential user by email
-message GetOneCredentialUserByEmailRequest {
-    string email = 1;
-}
 
-message GetOneCredentialUserByEmailResponse {
-    string id = 1;
-    string password_hash = 2;
-}
 
 // Update password
 message UpdateOnePasswordUserRequest {

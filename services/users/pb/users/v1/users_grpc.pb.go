@@ -19,18 +19,17 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UserService_CreateOneUser_FullMethodName               = "/pb.users.pbuser.UserService/CreateOneUser"
-	UserService_GetOneUser_FullMethodName                  = "/pb.users.pbuser.UserService/GetOneUser"
-	UserService_GetOneCredentialUserByEmail_FullMethodName = "/pb.users.pbuser.UserService/GetOneCredentialUserByEmail"
-	UserService_GetManyUser_FullMethodName                 = "/pb.users.pbuser.UserService/GetManyUser"
-	UserService_UpdateOnePasswordUser_FullMethodName       = "/pb.users.pbuser.UserService/UpdateOnePasswordUser"
-	UserService_UpdateOneEmailUser_FullMethodName          = "/pb.users.pbuser.UserService/UpdateOneEmailUser"
-	UserService_UpdateOneRoleUser_FullMethodName           = "/pb.users.pbuser.UserService/UpdateOneRoleUser"
-	UserService_DeleteSoftOneUser_FullMethodName           = "/pb.users.pbuser.UserService/DeleteSoftOneUser"
-	UserService_DeleteHardOneUser_FullMethodName           = "/pb.users.pbuser.UserService/DeleteHardOneUser"
-	UserService_LoginUser_FullMethodName                   = "/pb.users.pbuser.UserService/LoginUser"
-	UserService_VerifyTokenUser_FullMethodName             = "/pb.users.pbuser.UserService/VerifyTokenUser"
-	UserService_RefreshTokenUser_FullMethodName            = "/pb.users.pbuser.UserService/RefreshTokenUser"
+	UserService_CreateOneUser_FullMethodName         = "/pb.users.pbuser.UserService/CreateOneUser"
+	UserService_GetOneUser_FullMethodName            = "/pb.users.pbuser.UserService/GetOneUser"
+	UserService_GetManyUser_FullMethodName           = "/pb.users.pbuser.UserService/GetManyUser"
+	UserService_UpdateOnePasswordUser_FullMethodName = "/pb.users.pbuser.UserService/UpdateOnePasswordUser"
+	UserService_UpdateOneEmailUser_FullMethodName    = "/pb.users.pbuser.UserService/UpdateOneEmailUser"
+	UserService_UpdateOneRoleUser_FullMethodName     = "/pb.users.pbuser.UserService/UpdateOneRoleUser"
+	UserService_DeleteSoftOneUser_FullMethodName     = "/pb.users.pbuser.UserService/DeleteSoftOneUser"
+	UserService_DeleteHardOneUser_FullMethodName     = "/pb.users.pbuser.UserService/DeleteHardOneUser"
+	UserService_LoginUser_FullMethodName             = "/pb.users.pbuser.UserService/LoginUser"
+	UserService_VerifyTokenUser_FullMethodName       = "/pb.users.pbuser.UserService/VerifyTokenUser"
+	UserService_RefreshTokenUser_FullMethodName      = "/pb.users.pbuser.UserService/RefreshTokenUser"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -39,7 +38,6 @@ const (
 type UserServiceClient interface {
 	CreateOneUser(ctx context.Context, in *CreateOneUserRequest, opts ...grpc.CallOption) (*CreateOneUserResponse, error)
 	GetOneUser(ctx context.Context, in *GetOneUserRequest, opts ...grpc.CallOption) (*GetOneUserResponse, error)
-	GetOneCredentialUserByEmail(ctx context.Context, in *GetOneCredentialUserByEmailRequest, opts ...grpc.CallOption) (*GetOneCredentialUserByEmailResponse, error)
 	GetManyUser(ctx context.Context, in *GetManyUserRequest, opts ...grpc.CallOption) (*GetManyUserResponse, error)
 	UpdateOnePasswordUser(ctx context.Context, in *UpdateOnePasswordUserRequest, opts ...grpc.CallOption) (*UpdateOnePasswordUserResponse, error)
 	UpdateOneEmailUser(ctx context.Context, in *UpdateOneEmailUserRequest, opts ...grpc.CallOption) (*UpdateOneEmailUserResponse, error)
@@ -74,16 +72,6 @@ func (c *userServiceClient) GetOneUser(ctx context.Context, in *GetOneUserReques
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetOneUserResponse)
 	err := c.cc.Invoke(ctx, UserService_GetOneUser_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userServiceClient) GetOneCredentialUserByEmail(ctx context.Context, in *GetOneCredentialUserByEmailRequest, opts ...grpc.CallOption) (*GetOneCredentialUserByEmailResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetOneCredentialUserByEmailResponse)
-	err := c.cc.Invoke(ctx, UserService_GetOneCredentialUserByEmail_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -186,7 +174,6 @@ func (c *userServiceClient) RefreshTokenUser(ctx context.Context, in *RefreshTok
 type UserServiceServer interface {
 	CreateOneUser(context.Context, *CreateOneUserRequest) (*CreateOneUserResponse, error)
 	GetOneUser(context.Context, *GetOneUserRequest) (*GetOneUserResponse, error)
-	GetOneCredentialUserByEmail(context.Context, *GetOneCredentialUserByEmailRequest) (*GetOneCredentialUserByEmailResponse, error)
 	GetManyUser(context.Context, *GetManyUserRequest) (*GetManyUserResponse, error)
 	UpdateOnePasswordUser(context.Context, *UpdateOnePasswordUserRequest) (*UpdateOnePasswordUserResponse, error)
 	UpdateOneEmailUser(context.Context, *UpdateOneEmailUserRequest) (*UpdateOneEmailUserResponse, error)
@@ -212,9 +199,6 @@ func (UnimplementedUserServiceServer) CreateOneUser(context.Context, *CreateOneU
 }
 func (UnimplementedUserServiceServer) GetOneUser(context.Context, *GetOneUserRequest) (*GetOneUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOneUser not implemented")
-}
-func (UnimplementedUserServiceServer) GetOneCredentialUserByEmail(context.Context, *GetOneCredentialUserByEmailRequest) (*GetOneCredentialUserByEmailResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetOneCredentialUserByEmail not implemented")
 }
 func (UnimplementedUserServiceServer) GetManyUser(context.Context, *GetManyUserRequest) (*GetManyUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetManyUser not implemented")
@@ -296,24 +280,6 @@ func _UserService_GetOneUser_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).GetOneUser(ctx, req.(*GetOneUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UserService_GetOneCredentialUserByEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetOneCredentialUserByEmailRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServiceServer).GetOneCredentialUserByEmail(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: UserService_GetOneCredentialUserByEmail_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).GetOneCredentialUserByEmail(ctx, req.(*GetOneCredentialUserByEmailRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -494,10 +460,6 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetOneUser",
 			Handler:    _UserService_GetOneUser_Handler,
-		},
-		{
-			MethodName: "GetOneCredentialUserByEmail",
-			Handler:    _UserService_GetOneCredentialUserByEmail_Handler,
 		},
 		{
 			MethodName: "GetManyUser",

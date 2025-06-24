@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func convertRole(r pbusers.UserRole) (db.UserRole, error) {
+func convertRoleProtoToRoleDb(r pbusers.UserRole) (db.UserRole, error) {
 	switch r {
 	case pbusers.UserRole_Unspecified:
 		return "", status.Error(codes.InvalidArgument, "invalid user role")
@@ -21,5 +21,20 @@ func convertRole(r pbusers.UserRole) (db.UserRole, error) {
 		return db.UserRoleParent, nil
 	default:
 		return "", status.Error(codes.InvalidArgument, "invalid user role")
+	}
+}
+
+func convertRoleDbToRoleProto(r db.UserRole) pbusers.UserRole {
+	switch r {
+	case db.UserRoleParent:
+		return pbusers.UserRole_Parent
+	case db.UserRoleStudent:
+		return pbusers.UserRole_Student
+	case db.UserRoleTeacher:
+		return pbusers.UserRole_Teacher
+	case db.UserRoleStaff:
+		return pbusers.UserRole_Staff
+	default:
+		return pbusers.UserRole_Unspecified
 	}
 }
